@@ -12,7 +12,7 @@ system.add(M)
 M.draw = function (dt, ents)
   for _,e in ipairs(ents) do
     if e.sprite and e.position then
-      love.graphics.circle(e.position.x, e.position.y, e.sprite.r)
+      love.graphics.circle("fill", e.position.x, e.position.y, e.sprite.r,30)
     end
   end
 end

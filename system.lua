@@ -16,7 +16,7 @@ end
 M.draw = function ()
   local ents = entity.all()
 
-  for _,s in systems do
+  for _,s in ipairs(systems) do
     if s.draw then
       s.draw(dt, ents)
     end

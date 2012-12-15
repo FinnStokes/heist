@@ -3,6 +3,8 @@
 local event = require("event")
 local entity = require("entity")
 local input = require("input")
+local player = require("player")
+local sprite = require("sprite")
 local system = require("system")
 
 --- The draw callback for Love.
@@ -11,8 +13,8 @@ love.draw = function ()
 end
 
 --- The initialisation for Love.
-love.init = function ()
-  print("Initialisation!!")
+love.load = function ()
+  player.newLocal()
 end
 
 love.keypressed = function (key)
