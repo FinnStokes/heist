@@ -3,6 +3,7 @@
 local LISTEN_PORT = 44000
 local UPDATE_TIME = 0.1
 
+local entity = require("entity")
 local player = require("player")
 local socket = require("socket")
 local system = require("system")
@@ -54,7 +55,6 @@ M.step = function (dt, entities)
     if cmd == "connected" then
       -- We are connected
       playerId = tonumber(args:match("^(%S*)"))
-      print(playerId)
     elseif cmd == "makePlayer" then
       local theirPlayerId, netEntityId = args:match("^(%S*) (%S*)")
       assert(theirPlayerId and netEntityId)

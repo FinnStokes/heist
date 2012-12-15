@@ -109,22 +109,20 @@ M.update = function (dt)
     timer = 0
     
     -- Compose update packet
-    local packet = ""
+    local packet
     for _, e in ipairs(entity.all()) do
       if e.network then
         local netId = local2net[e.id]
-        packet = packet .. netId .. " "
+        packet = "pos " .. netId .. " "
         if e.position then
           packet = packet .. tostring(e.position.x) .. " "
           packet = packet .. tostring(e.position.y) .. " "
         end
-        packet = packet .. ";"
       end
-    end
-    
-    -- Send packet to all players
-    for id,address in pairs(players.id2address) do
-      sock:sendto(packet, address.ip, address.port)
+      -- Send packet to all players
+      for id,address in pairs(players.id2address) do
+        sock:sendto(packet, address.ip, address.port)
+      end
     end
   end
 end
