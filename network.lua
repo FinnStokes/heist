@@ -4,6 +4,7 @@ local LISTEN_PORT = 44000
 local UPDATE_TIME = 0.1
 
 local socket = require("socket")
+local system = require("system")
 
 local M = {}
 
@@ -18,7 +19,7 @@ local timer
 system.add(M)
 
 M.start = function (address, port)
-  sock = socket.udp
+  sock = socket.udp()
   sock:settimeout(0)
   sock:setpeername(address, port)
   
@@ -36,13 +37,14 @@ M.step = function (dt, entities)
     local data = sock:receive()
 
     if data == nil then
-      if msg_or_ip == "timeout" then
-        -- No more packets, so finish this update
-        break
-      else
-        -- Something bad happened, print message to error
-        error("E: " .. tostring(msg))
-      end
+      break
+      -- if msg_or_ip == "timeout" then
+      --   -- No more packets, so finish this update
+      --   break
+      -- else
+      --   -- Something bad happened, print message to error
+      --   error("E: " .. tostring(msg_or_ip))
+      -- end
     end
     
     -- Expects: "[cmd] [args...]"
@@ -50,7 +52,8 @@ M.step = function (dt, entities)
     
     if cmd == "connected" then
       -- We are connected
-      playerId = tonumber(args:match("^(%S*) "))
+      playerId = tonumber(args:match("^(%S*)"))
+      print(playerId)
     elseif cmd == "pos" then
       local netId, x, y = args:match("^(%S*) (%S*) (%S*) ")
       local e = entity.get(net2local[netId])
