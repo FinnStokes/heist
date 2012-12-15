@@ -3,7 +3,8 @@
 local LISTEN_PORT = 44000
 local UPDATE_TIME = 0.1
 
-local socket = require "socket"
+local entity = require("entity")
+local socket = require("socket")
 
 local commands = {}
 local local2net = {}
