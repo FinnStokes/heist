@@ -1,6 +1,5 @@
 --The main file for Heist
 
-local event = require("event")
 local entity = require("entity")
 local input = require("input")
 local player = require("player")
