@@ -58,3 +58,5 @@ M.update = function (dt)
     end
   end
 end
+
+return M
