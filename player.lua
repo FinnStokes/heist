@@ -17,7 +17,7 @@ end
 
 M.newLocal = function ()
   local player = new()
-  player.input = {}
+  player.network = {}
   entity.tag(player, "avatar")
   return player
 end

@@ -3,10 +3,11 @@
 local entity = require("entity")
 local event = require("event")
 local input = require("input")
+local physics = require("physics")
 local player = require("player")
+local server = require("server")
 local sprite = require("sprite")
 local system = require("system")
-local physics = require("physics")
 
 --Constants
 SPEED = 200
@@ -18,7 +19,7 @@ end
 
 --- The initialisation for Love.
 love.load = function ()
-  player.newLocal()
+  server.start()
 end
 
 love.joystickpressed = function (joystick, button)

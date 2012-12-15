@@ -54,6 +54,19 @@ M.step = function (dt, entities)
       -- We are connected
       playerId = tonumber(args:match("^(%S*)"))
       print(playerId)
+    elseif cmd == "makePlayer" then
+      local theirPlayerId, netEntityId = args:match("^(%S*) (%S*)")
+      assert(theirPlayerId and netEntityId)
+      theirPlayerId = tonumber(theirPlayerId)
+      netEntityId = tonumber(netEntityId)
+      local newPlayer
+      if theirPlayerId == playerId then
+        newPlayer = player.newLocal()
+      else
+        newPlayer = player.newRemote()
+      end
+      local2net[newPlayer.id] = netEntityId
+      net2local[netEntityId] = newPlayer.id
     elseif cmd == "pos" then
       local netId, x, y = args:match("^(%S*) (%S*) (%S*) ")
       local e = entity.get(net2local[netId])

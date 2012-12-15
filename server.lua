@@ -9,6 +9,7 @@ local socket = require("socket")
 local commands = {}
 local local2net = {}
 local net2local = {}
+local nextEntityId = 1
 local players = {
   id2address = {},
   address2id = {},
@@ -73,6 +74,16 @@ M.update = function (dt)
       
       -- Tell the player they are connected
       sock:sendto("connected " .. id, msg_or_ip, port_or_nil)
+      
+      local packet = "makePlayer %s %s":format(id, nextEntityId)
+      local newPlayer = player.newRemote()
+      newPlayer.network = {}
+      local2net[newPlayer.id] = nextEntityId
+      net2local[nextEntityId] = newPlayer.id
+      nextEntityId = nextEntityId + 1
+      for id,address in pairs(players.id2address) do
+        sock:sendto(packet, address.ip, address.port)
+      end
     else
       local args = data:match("^%S* (.*)")
       
