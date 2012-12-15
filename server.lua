@@ -56,12 +56,12 @@ M.update = function (dt)
     end
     
     -- Expects: "[command] [args...]"
-    local cmd, netId, args = data:match("^(%S*) (%S*) (.*)")
+    local cmd = data:match("^(%S*)")
     
     if cmd == "connect" then
       -- A new player is connecting
       local id = players.nextId
-      nextId = nextId + 1
+      players.nextId = players.nextId + 1
       
       local address = {
         ip = msg_or_ip,
@@ -74,8 +74,12 @@ M.update = function (dt)
       -- Tell the player they are connected
       sock:sendto("connected " .. id, msg_or_ip, port_or_nil)
     else
+      local args = data:match("^%S* (.*)")
+      
       -- Call this commands handler
-      commands[cmd](tonumber(netId), args)
+      local address = tostring(msg_or_ip) .. tostring(port_or_nil)
+      local netId = players.address2id[address]
+      commands[cmd](netId, args)
     end
   end
   
@@ -85,20 +89,20 @@ M.update = function (dt)
     
     -- Compose update packet
     local packet = ""
-    for _, e in ipairs(entity.all()) then
-      local netId = local2id[e.id]
-      packet = packet .. netId .. " "
+    for _, e in ipairs(entity.all()) do
       if e.network then
+        local netId = local2id[e.id]
+        packet = packet .. netId .. " "
         if e.position then
           packet = packet .. tostring(e.position.x) .. " "
           packet = packet .. tostring(e.position.y) .. " "
         end
+        packet = packet .. ";"
       end
-      packet = packet .. ";"
     end
     
     -- Send packet to all players
-    for id,address in pairs(players.id2address)
+    for id,address in pairs(players.id2address) do
       sock:sendto(packet, address.ip, address.port)
     end
   end
