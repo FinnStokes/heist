@@ -3,6 +3,7 @@
 local LISTEN_PORT = 44000
 local UPDATE_TIME = 0.1
 
+local player = require("player")
 local socket = require("socket")
 local system = require("system")
 
@@ -81,6 +82,7 @@ M.step = function (dt, entities)
       timer = 0
       for _,e in ipairs(entities) do
         if e.network then
+          local netId = local2net[e.id]
           packet = string.format(
             "pos %f %f %f",
             netId,

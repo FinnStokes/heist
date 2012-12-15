@@ -44,6 +44,7 @@ love.update = function (dt)
   event.update(dt)
   entity.update(dt)
   system.update(dt)
+  server.update(dt)
 end
 
 local OORT = 0.70710678118

@@ -4,6 +4,7 @@ local LISTEN_PORT = 44000
 local UPDATE_TIME = 0.1
 
 local entity = require("entity")
+local player = require("player")
 local socket = require("socket")
 
 local commands = {}
@@ -75,7 +76,7 @@ M.update = function (dt)
       -- Tell the player they are connected
       sock:sendto("connected " .. id, msg_or_ip, port_or_nil)
       
-      local packet = "makePlayer %s %s":format(id, nextEntityId)
+      local packet = string.format("makePlayer %s %s",id, nextEntityId)
       local newPlayer = player.newRemote()
       newPlayer.network = {}
       local2net[newPlayer.id] = nextEntityId
@@ -89,8 +90,8 @@ M.update = function (dt)
       
       -- Call this commands handler
       local address = tostring(msg_or_ip) .. tostring(port_or_nil)
-      local netId = players.address2id[address]
-      commands[cmd](netId, args)
+      local playerId = players.address2id[address]
+      commands[cmd](playerId, args)
     end
   end
   
@@ -102,7 +103,7 @@ M.update = function (dt)
     local packet = ""
     for _, e in ipairs(entity.all()) do
       if e.network then
-        local netId = local2id[e.id]
+        local netId = local2net[e.id]
         packet = packet .. netId .. " "
         if e.position then
           packet = packet .. tostring(e.position.x) .. " "
@@ -120,11 +121,11 @@ M.update = function (dt)
 end
 
 -- Updates the player position
-commands.pos = function (netId, args)
-  local x, y = args:match("^(%-?[%d.e]*) (%-?[%d.e]*)$")
-  assert(x and y)
-  x, y = tonumber(x), tonumber(y)
-  local e = entity.get(net2local[netId])
+commands.pos = function (playerId, args)
+  local id, x, y = args:match("^(%-?[%d.e]*) (%-?[%d.e]*) (%-?[%d.e]*)$")
+  assert(id and x and y)
+  id, x, y = tonumber(id), tonumber(x), tonumber(y)
+  local e = entity.get(net2local[id])
   e.position.x, e.position.y = x, y
 end
 
