@@ -1,5 +1,4 @@
--- event.lua
--- The event manager majiga
+--- The event manager.
 
 local M = {}
 
@@ -7,22 +6,29 @@ local subQueue = {}
 local noteQueue = {}
 local subbed = {}
 
---Called to put into action anything corresponding to a particular event
+--- Called to put into action anything corresponding to a particular event.
+-- @param event (string) The event identifier.
+-- @param data (table) The data to pass to subscribed actions.
 M.notify = function (event, data)
   table.insert(noteQueue, {event, data})
 end
 
---Subscribe a certain action to a particular event
+--- Subscribe an action to a particular event.
+-- @param event (string) The event identifier.
+-- @param action (function) The function to call to handle the event.
 M.subscribe = function (event, action)
   table.insert(subQueue, {event, action, true})
 end
 
---Remove an action from a particular event
+--- Remove an action from a particular event.
+-- @param event (string) The event identifier.
+-- @param action (function) The function to unsubscribe from the event.
 M.unsubscribe = function (event, action)
   table.insert(subQueue, {event, action, false})
 end
 
---The update method called each tick which deals with the events
+--- Called each tick to process the events.
+-- @param dt (number) Time delta in seconds.
 M.update = function (dt)
   --Deal with the subscribe queue wrt the subscribed list
   for _,t in ipairs(subQueue) do
