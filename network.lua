@@ -68,12 +68,14 @@ M.step = function (dt, entities)
       end
       local2net[newPlayer.id] = netEntityId
       net2local[netEntityId] = newPlayer.id
-    elseif cmd == "pos" then
-      local netId, x, y = args:match("^(%S*) (%S*) (%S*) ")
-      assert(netId and x and y)
+    elseif cmd == "move" then
+      local netId, x, y, vx, vy = args:match("^(%S*) (%S*) (%S*) (%S*) (%S*)")
+      assert(netId and x and y and vx and vy)
       netId = tonumber(netId)
       x = tonumber(x)
       y = tonumber(y)
+      vx = tonumber(vx)
+      vy = tonumber(vy)
       local e = entity.get(net2local[netId])
       e.position.x = x
       e.position.y = y
@@ -85,13 +87,15 @@ M.step = function (dt, entities)
     if timer >= UPDATE_TIME then
       timer = 0
       for _,e in ipairs(entities) do
-        if e.network then
+        if e.network and e.position and e.velocity then
           local netId = local2net[e.id]
           packet = string.format(
-            "pos %f %f %f",
+            "move %u %f %f %f %f",
             netId,
             e.position.x,
-            e.position.y
+            e.position.y,
+            e.velocity.x,
+            e.velocity.y,
           )
           sock:send(packet)
         end

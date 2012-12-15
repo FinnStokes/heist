@@ -113,10 +113,12 @@ M.update = function (dt)
     for _, e in ipairs(entity.all()) do
       if e.network then
         local netId = local2net[e.id]
-        packet = "pos " .. netId .. " "
+        packet = "move " .. netId .. " "
         if e.position then
           packet = packet .. tostring(e.position.x) .. " "
           packet = packet .. tostring(e.position.y) .. " "
+          packet = packet .. tostring(e.velocity.y) .. " "
+          packet = packet .. tostring(e.velocity.y) .. " "
         end
       end
       -- Send packet to all players
@@ -128,12 +130,13 @@ M.update = function (dt)
 end
 
 -- Updates the player position
-commands.pos = function (playerId, args)
-  local id, x, y = args:match("^(%-?[%d.e]*) (%-?[%d.e]*) (%-?[%d.e]*)$")
-  assert(id and x and y)
-  id, x, y = tonumber(id), tonumber(x), tonumber(y)
+commands.move = function (playerId, args)
+  local id, x, y, vx, vy = args:match("^(%S*) (%S*) (%S*) (%S*) (%S*)$")
+  assert(id and x and y and vx and vy)
+  id, x, y, vx, vy = tonumber(id), tonumber(x), tonumber(y), tonumber(vx), tonumber(vy)
   local e = entity.get(net2local[id])
   e.position.x, e.position.y = x, y
+  e.velocity.x, e.velocity.y = vx, vy
 end
 
 return M
