@@ -7,6 +7,9 @@ local entitiesById = {}
 local entitiesByTag = {}
 local entityList = {}
 local deleteQueue = {}
+local addQueue = {}
+local tagQueue = {}
+local groupQueue = {}
 
 --- Get a list of all active enemies.
 -- @return (table) The list of entities.
@@ -44,10 +47,7 @@ end
 -- @param entity (table) The entity.
 -- @param group (string) A named group of entities.
 M.group = function (entity, group)
-  if entitiesByGroup[group] == nil then
-    entitiesByGroup[group] = {}
-  end
-  table.insert(entitiesByGroup[group], entity)
+  table.insert(groupQueue, {entity, group, true})
 end
 
 --- Create a new entity.
@@ -56,8 +56,7 @@ M.new = function ()
   local entity = {}
   entity.id = nextId
   nextId = nextId + 1
-  entitiesById[entity.id] = entity
-  table.insert(entityList, entity)
+  table.insert(addQueue, entity)
   return entity
 end
 
@@ -65,26 +64,43 @@ end
 -- @param entity (table) The entity.
 -- @param tag (string) A name to access a single entity.
 M.tag = function(entity, tag)
-  entitiesByTag[tag] = entity
+  table.insert(tagQueue, {entity, tag})
 end
 
 --- Remove an entity from a group.
 -- @param entity (table) The entity.
 -- @param group (string) A named group of entities.
 M.ungroup = function (entity, group)
-  if entitiesByGroup[group] ~= nil then
-    for i,e in ipairs(entitiesByGroup[group]) do
-      if e == entity then
-        table.remove(entitiesByGroup[group], i)
-        break
-      end
-    end
-  end
+  table.insert(groupQueue, {entity, group, false})
 end
 
 --- Update the entity manager.
 -- @param dt (number) Time delta in seconds.
 M.update = function (dt)
+  for _,entity in ipairs(addQueue) do
+    entitiesById[entity.id] = entity
+    table.insert(entityList, entity)
+  end
+  for _,t in ipairs(tagQueue) do
+    entitiesByTag[t[2]] = t[1]
+  end
+  for _,t in ipairs(groupQueue) do
+    if t[3] then
+      if entitiesByGroup[t[2]] == nil then
+        entitiesByGroup[t[2]] = {}
+      end
+      table.insert(entitiesByGroup[t[2]], t[1])
+    else
+      if entitiesByGroup[t[2]] ~= nil then
+        for i,e in ipairs(entitiesByGroup[t[2]]) do
+          if e == t[1] then
+            table.remove(entitiesByGroup[t[2]], i)
+            break
+          end
+        end
+      end
+    end
+  end
   for _,entity in ipairs(deleteQueue) do
     entitiesById[entity.id] = nil
     for i,e in ipairs(entiyList) do
