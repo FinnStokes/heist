@@ -10,7 +10,7 @@ system.add(M)
 -- @param dt (number) Time delta in seconds.
 -- @param ents (table) A list of entities with sprites (ignored if no sprite).
 M.draw = function (dt, ents)
-  for _,e in ipairs(ents)
+  for _,e in ipairs(ents) do
     if e.sprite and e.position then
       love.graphics.circle(e.position.x, e.position.y, e.sprite.r)
     end
