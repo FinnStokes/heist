@@ -1,6 +1,7 @@
 --- The sprite manager.
 
 local system = require("system")
+local camera = require("camera")
 
 local M = {}
 
@@ -12,7 +13,8 @@ system.add(M)
 M.draw = function (ents)
   for _,e in ipairs(ents) do
     if e.sprite and e.position then
-      love.graphics.circle("fill", e.position.x, e.position.y, e.sprite.r,30)
+      local pos = camera.worldToScreen(e.position)
+      love.graphics.circle("fill", pos.x, pos.y, e.sprite.r*math.abs(camera.xScale),30)
     end
   end
 end
