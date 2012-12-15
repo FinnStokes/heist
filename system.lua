@@ -1,5 +1,4 @@
--- system.lua
--- Low level module for managing systems
+--- Low level module for managing systems.
 
 local entity = require("entity")
 
@@ -7,10 +6,14 @@ local M = {}
 
 local systems = {}
 
+--- Adds a system to the list of systems
+-- @param system (table) The system to add.
 M.add = function (system)
   table.insert(systems, system)
 end
 
+--- Removes a system from the list
+-- @param system (table) The system to remove.
 M.remove = function (system)
   for i,s in ipairs(systems) do
     if s == system then
@@ -20,6 +23,8 @@ M.remove = function (system)
   end
 end
 
+--- Updates the system, called each tick
+-- @param dt The time delta in seconds.
 M.update = function (dt)
   local ents = entity.all()
 
@@ -40,6 +45,7 @@ M.update = function (dt)
   end
 end
 
+--- Draws all the systems contained
 M.draw = function ()
   local ents = entity.all()
 
