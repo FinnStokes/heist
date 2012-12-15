@@ -95,7 +95,7 @@ M.step = function (dt, entities)
             e.position.x,
             e.position.y,
             e.velocity.x,
-            e.velocity.y,
+            e.velocity.y
           )
           sock:send(packet)
         end
