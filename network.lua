@@ -69,8 +69,11 @@ M.step = function (dt, entities)
       local2net[newPlayer.id] = netEntityId
       net2local[netEntityId] = newPlayer.id
     elseif cmd == "pos" then
-      local theirPlayerId, x, y = args:match("^(%S*) (%S*) (%S*) ")
-      assert(theirPlayerId and x and y)
+      local netId, x, y = args:match("^(%S*) (%S*) (%S*) ")
+      assert(netId and x and y)
+      netId = tonumber(netId)
+      x = tonumber(x)
+      y = tonumber(y)
       local e = entity.get(net2local[netId])
       e.position.x = x
       e.position.y = y
