@@ -20,19 +20,27 @@ end
 
 M.update = function (dt)
   for _,s in systems do
-    s.preStep(dt)
+    if s.preStep then
+      s.preStep(dt)
+    end
   end
   for _,s in systems do
-    s.step(dt)
+    if s.step then
+      s.step(dt)
+    end
   end
   for _,s in systems do
-    s.postStep(dt)
+    if s.postStep then
+      s.postStep(dt)
+    end
   end
 end
 
 M.draw = function ()
   for _,s in systems do
-    s.draw(dt)
+    if s.draw then
+      s.draw(dt)
+    end
   end
 end
 
