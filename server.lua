@@ -12,6 +12,7 @@ local local2net = {}
 local net2local = {}
 local nextEntityId = 1
 local players = {
+  entities = {},
   id2address = {},
   address2id = {},
   nextId = 1,
@@ -76,11 +77,19 @@ M.update = function (dt)
       -- Tell the player they are connected
       sock:sendto("connected " .. id, msg_or_ip, port_or_nil)
       
+      -- Spawn existing players on the new client
+      for playerId,netId in pairs(players.entities) do
+        local packet = string.format("makePlayer %s %s", playerId, netId)
+        sock:sendto(packet, msg_or_ip, port_or_nil)
+      end
+      
+      -- Spawn this new player on each client
       local packet = string.format("makePlayer %s %s",id, nextEntityId)
       local newPlayer = player.newRemote()
       newPlayer.network = {}
       local2net[newPlayer.id] = nextEntityId
       net2local[nextEntityId] = newPlayer.id
+      players.entities[id] = nextEntityId
       nextEntityId = nextEntityId + 1
       for id,address in pairs(players.id2address) do
         sock:sendto(packet, address.ip, address.port)
