@@ -18,7 +18,7 @@ M.draw = function ()
 
   for _,s in ipairs(systems) do
     if s.draw then
-      s.draw(dt, ents)
+      s.draw(ents)
     end
   end
 end
@@ -38,18 +38,18 @@ end
 -- @param dt The time delta in seconds.
 M.update = function (dt)
   local ents = entity.all()
-
-  for _,s in systems do
+  
+  for _,s in ipairs(systems) do
     if s.preStep then
       s.preStep(dt, ents)
     end
   end
-  for _,s in systems do
+  for _,s in ipairs(systems) do
     if s.step then
       s.step(dt, ents)
     end
   end
-  for _,s in systems do
+  for _,s in ipairs(systems) do
     if s.postStep then
       s.postStep(dt, ents)
     end

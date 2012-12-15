@@ -9,7 +9,7 @@ local system = require("system")
 local physics = require("physics")
 
 --Constants
-SPEED = 20
+SPEED = 200
 
 --- The draw callback for Love.
 love.draw = function ()
@@ -33,4 +33,5 @@ end
 love.update = function (dt)
   event.update(dt)
   entity.update(dt)
+  system.update(dt)
 end

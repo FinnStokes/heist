@@ -125,6 +125,10 @@ M.update = function (dt)
       end
     end
   end
+  deleteQueue = {}
+  addQueue = {}
+  tagQueue = {}
+  groupQueue = {}
 end
 
 return M
