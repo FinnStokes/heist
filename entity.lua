@@ -5,6 +5,7 @@ local M = {}
 local nextId = 1
 local entitiesById = {}
 local entitiesByTag = {}
+local entitiesByGroup = {}
 local entityList = {}
 local deleteQueue = {}
 local addQueue = {}

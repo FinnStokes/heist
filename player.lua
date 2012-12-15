@@ -9,12 +9,14 @@ local new = function ()
   local player = entity.new()
   player.sprite = {r = 20}
   player.position = {x = 100, y = 100}
+  entity.group(player, "players")
   return player
 end
 
 M.newLocal = function ()
   local player = new()
   player.input = {}
+  entity.tag(player, "avatar")
   return player
 end
 
