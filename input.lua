@@ -15,13 +15,13 @@ M.keypressed = function (key)
   local player = entity.get("avatar")
   if player and player.position then
     if key == "w" then
-      player.position.y = player.position.y - 10
+      player.velocity.y = -SPEED
     elseif key == "a" then
-      player.position.x = player.position.x - 10
+      player.velocity.x = -SPEED
     elseif key == "s" then
-      player.position.y = player.position.y + 10
+      player.velocity.y = SPEED
     elseif key == "d" then
-      player.position.x = player.position.x + 10
+      player.velocity.x = SPEED
     end
   end
 end
@@ -29,7 +29,18 @@ end
 --- The function to call when a key is released
 -- @param key The key released?
 M.keyreleased = function (key)
-  
+  local player = entity.get("avatar")
+  if player and player.position then
+    if key == "w" then
+      player.velocity.y = 0
+    elseif key == "a" then
+      player.velocity.x = 0
+    elseif key == "s" then
+      player.velocity.y = 0
+    elseif key == "d" then
+      player.velocity.x = 0
+    end
+  end
 end
 
 return M

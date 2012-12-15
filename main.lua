@@ -6,6 +6,10 @@ local input = require("input")
 local player = require("player")
 local sprite = require("sprite")
 local system = require("system")
+local physics = require("physics")
+
+--Constants
+SPEED = 20
 
 --- The draw callback for Love.
 love.draw = function ()
