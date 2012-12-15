@@ -1,6 +1,8 @@
 -- system.lua
 -- Low level module for managing systems
 
+local entity = require("entity")
+
 local M = {}
 
 local systems = {}
@@ -19,27 +21,31 @@ M.remove = function (system)
 end
 
 M.update = function (dt)
+  local ents = entity.all()
+
   for _,s in systems do
     if s.preStep then
-      s.preStep(dt)
+      s.preStep(dt, ents)
     end
   end
   for _,s in systems do
     if s.step then
-      s.step(dt)
+      s.step(dt, ents)
     end
   end
   for _,s in systems do
     if s.postStep then
-      s.postStep(dt)
+      s.postStep(dt, ents)
     end
   end
 end
 
 M.draw = function ()
+  local ents = entity.all()
+
   for _,s in systems do
     if s.draw then
-      s.draw(dt)
+      s.draw(dt, ents)
     end
   end
 end
