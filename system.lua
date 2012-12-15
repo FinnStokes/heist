@@ -12,6 +12,17 @@ M.add = function (system)
   table.insert(systems, system)
 end
 
+--- Draws all the systems contained
+M.draw = function ()
+  local ents = entity.all()
+
+  for _,s in systems do
+    if s.draw then
+      s.draw(dt, ents)
+    end
+  end
+end
+
 --- Removes a system from the list
 -- @param system (table) The system to remove.
 M.remove = function (system)
@@ -41,17 +52,6 @@ M.update = function (dt)
   for _,s in systems do
     if s.postStep then
       s.postStep(dt, ents)
-    end
-  end
-end
-
---- Draws all the systems contained
-M.draw = function ()
-  local ents = entity.all()
-
-  for _,s in systems do
-    if s.draw then
-      s.draw(dt, ents)
     end
   end
 end

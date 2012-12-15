@@ -2,18 +2,12 @@
 
 local event = require("event")
 local entity = require("entity")
-local system = require("system")
 local input = require("input")
+local system = require("system")
 
 --- The draw callback for Love.
 love.draw = function ()
   system.draw()
-end
-
---- The update callback for Love.
-love.update = function (dt)
-  event.update(dt)
-  entity.update(dt)
 end
 
 --- The initialisation for Love.
@@ -27,4 +21,10 @@ end
 
 love.keyreleased = function (key)
   input.keyreleased(key)
+end
+
+--- The update callback for Love.
+love.update = function (dt)
+  event.update(dt)
+  entity.update(dt)
 end
