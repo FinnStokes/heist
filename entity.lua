@@ -11,7 +11,7 @@ local addQueue = {}
 local tagQueue = {}
 local groupQueue = {}
 
---- Get a list of all active enemies.
+--- Get a list of all active entities.
 -- @return (table) The list of entities.
 M.all = function ()
   return entityList
