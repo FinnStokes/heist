@@ -42,9 +42,9 @@ end
 
 --- The update callback for Love.
 love.update = function (dt)
-  timing.update(dt)
   input.update(dt)
   event.update(dt)
+  timing.update(dt)
   entity.update(dt)
   system.update(dt)
   --server.update(dt)
