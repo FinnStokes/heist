@@ -41,14 +41,14 @@
   <li><a href="../modules/action.html">action</a></li>
   <li><a href="../modules/camera.html">camera</a></li>
   <li><a href="../modules/entity.html">entity</a></li>
-  <li><strong>event</strong></li>
+  <li><a href="../modules/event.html">event</a></li>
   <li><a href="../modules/input.html">input</a></li>
   <li><a href="../modules/main.html">main</a></li>
   <li><a href="../modules/network.html">network</a></li>
   <li><a href="../modules/physics.html">physics</a></li>
   <li><a href="../modules/player.html">player</a></li>
   <li><a href="../modules/resource.html">resource</a></li>
-  <li><a href="../modules/server.html">server</a></li>
+  <li><strong>server</strong></li>
   <li><a href="../modules/sprite.html">sprite</a></li>
   <li><a href="../modules/system.html">system</a></li>
   <li><a href="../modules/timing.html">timing</a></li>
@@ -62,9 +62,9 @@
 
 <div id="content">
 
-<h1>Module <code>event</code></h1>
+<h1>Module <code>server</code></h1>
 
-<p>The event manager.</p>
+<p>The game server module.</p>
 <p>
 
 </p>
@@ -72,20 +72,20 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#notify">notify&nbsp;(event, data)</a></td>
-	<td class="summary">Called to put into action anything corresponding to a particular event.</td>
+	<td class="name" nowrap><a href="#getAddress">getAddress&nbsp;()</a></td>
+	<td class="summary">Gets the server IP and port.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#subscribe">subscribe&nbsp;(event, action)</a></td>
-	<td class="summary">Subscribe an action to a particular event.</td>
+	<td class="name" nowrap><a href="#start">start&nbsp;()</a></td>
+	<td class="summary">Start the server.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#unsubscribe">unsubscribe&nbsp;(event, action)</a></td>
-	<td class="summary">Remove an action from a particular event.</td>
+	<td class="name" nowrap><a href="#stop">stop&nbsp;()</a></td>
+	<td class="summary">Stop the server.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#update">update&nbsp;(dt)</a></td>
-	<td class="summary">Called each tick to process the events.</td>
+	<td class="summary">Update the server.</td>
 	</tr>
 </table>
 
@@ -97,51 +97,40 @@
     
     <dl class="function">
     <dt>
-    <a name = "notify"></a>
-    <strong>notify&nbsp;(event, data)</strong>
+    <a name = "getAddress"></a>
+    <strong>getAddress&nbsp;()</strong>
     </dt>
     <dd>
-    Called to put into action anything corresponding to a particular event. 
+    Gets the server IP and port. 
 
-    <h3>Parameters:</h3>
-    <ul>
-       <li><code><em>event</em></code>:  (string) The event identifier.</li>
-       <li><code><em>data</em></code>:  (table) The data to pass to subscribed actions.</li>
-    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        (string) The server address.
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "start"></a>
+    <strong>start&nbsp;()</strong>
+    </dt>
+    <dd>
+    Start the server. 
+
 
 
 
 
 </dd>
     <dt>
-    <a name = "subscribe"></a>
-    <strong>subscribe&nbsp;(event, action)</strong>
+    <a name = "stop"></a>
+    <strong>stop&nbsp;()</strong>
     </dt>
     <dd>
-    Subscribe an action to a particular event. 
+    Stop the server. 
 
-    <h3>Parameters:</h3>
-    <ul>
-       <li><code><em>event</em></code>:  (string) The event identifier.</li>
-       <li><code><em>action</em></code>:  (function) The function to call to handle the event.</li>
-    </ul>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "unsubscribe"></a>
-    <strong>unsubscribe&nbsp;(event, action)</strong>
-    </dt>
-    <dd>
-    Remove an action from a particular event. 
-
-    <h3>Parameters:</h3>
-    <ul>
-       <li><code><em>event</em></code>:  (string) The event identifier.</li>
-       <li><code><em>action</em></code>:  (function) The function to unsubscribe from the event.</li>
-    </ul>
 
 
 
@@ -152,7 +141,7 @@
     <strong>update&nbsp;(dt)</strong>
     </dt>
     <dd>
-    Called each tick to process the events. 
+    Update the server. 
 
     <h3>Parameters:</h3>
     <ul>

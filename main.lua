@@ -1,4 +1,4 @@
---The main file for Heist
+--- The main file for Heist
 
 local entity = require("entity")
 local event = require("event")

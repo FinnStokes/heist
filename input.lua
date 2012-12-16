@@ -21,7 +21,7 @@ local raw = {
 }
 
 --- The function to call when a joystick button is pressed
--- @param button (joystick) The id of the joystick on which the button was pressed
+-- @param joystick (number) The id of the joystick on which the button was pressed
 -- @param button (number) The id of the button that was pressed
 M.joystickPressed = function(joystick, button)
   raw.joystick.down[button] = true
@@ -29,7 +29,7 @@ M.joystickPressed = function(joystick, button)
 end
 
 --- The function to call when a joystick button is released
--- @param button (joystick) The id of the joystick on which the button was released
+-- @param joystick (number) The id of the joystick on which the button was released
 -- @param button (number) The id of the button that was released
 M.joystickReleased = function(joystick, button)
   raw.joystick.down[button] = nil

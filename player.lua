@@ -1,5 +1,4 @@
--- player.lua
--- Entity representing a player character
+--- Entity representing a player character
 
 local entity = require("entity")
 local event = require("event")

@@ -1,5 +1,4 @@
-
--- resource.lua
+--- Manges loading and accessing game resources.
 
 local M = {}
 

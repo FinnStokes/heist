@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>heist Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>heist</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/action.html">action</a></li>
+  <li><a href="../modules/camera.html">camera</a></li>
+  <li><a href="../modules/entity.html">entity</a></li>
+  <li><a href="../modules/event.html">event</a></li>
+  <li><strong>input</strong></li>
+  <li><a href="../modules/main.html">main</a></li>
+  <li><a href="../modules/network.html">network</a></li>
+  <li><a href="../modules/physics.html">physics</a></li>
+  <li><a href="../modules/player.html">player</a></li>
+  <li><a href="../modules/resource.html">resource</a></li>
+  <li><a href="../modules/server.html">server</a></li>
+  <li><a href="../modules/sprite.html">sprite</a></li>
+  <li><a href="../modules/system.html">system</a></li>
+  <li><a href="../modules/timing.html">timing</a></li>
+</ul>
+<h2>Topics</h2>
+<ul>
+  <li><a href="../topics/README.md.html">README.md</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>input</code></h1>
+
+<p>The input manager.</p>
+<p>
+
+</p>
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#joystickPressed">joystickPressed&nbsp;(joystick, button)</a></td>
+	<td class="summary">The function to call when a joystick button is pressed</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#joystickReleased">joystickReleased&nbsp;(joystick, button)</a></td>
+	<td class="summary">The function to call when a joystick button is released</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#keyPressed">keyPressed&nbsp;(key)</a></td>
+	<td class="summary">The function to call when a key is pressed</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#keyReleased">keyReleased&nbsp;(key)</a></td>
+	<td class="summary">The function to call when a key is released</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#newContext">newContext&nbsp;(active, priority)</a></td>
+	<td class="summary">Create a new input context, to map raw inputs to logical inputs</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update">update&nbsp;(dt)</a></td>
+	<td class="summary">Map raw inputs to logical inputs using active input contexts</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    
+    <dl class="function">
+    <dt>
+    <a name = "joystickPressed"></a>
+    <strong>joystickPressed&nbsp;(joystick, button)</strong>
+    </dt>
+    <dd>
+    The function to call when a joystick button is pressed 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>joystick</em></code>:  (number) The id of the joystick on which the button was pressed</li>
+       <li><code><em>button</em></code>:  (number) The id of the button that was pressed</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "joystickReleased"></a>
+    <strong>joystickReleased&nbsp;(joystick, button)</strong>
+    </dt>
+    <dd>
+    The function to call when a joystick button is released 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>joystick</em></code>:  (number) The id of the joystick on which the button was released</li>
+       <li><code><em>button</em></code>:  (number) The id of the button that was released</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "keyPressed"></a>
+    <strong>keyPressed&nbsp;(key)</strong>
+    </dt>
+    <dd>
+    The function to call when a key is pressed 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>key</em></code>:  (string) The key pressed</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "keyReleased"></a>
+    <strong>keyReleased&nbsp;(key)</strong>
+    </dt>
+    <dd>
+    The function to call when a key is released 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>key</em></code>:  (string) The key released</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "newContext"></a>
+    <strong>newContext&nbsp;(active, priority)</strong>
+    </dt>
+    <dd>
+    Create a new input context, to map raw inputs to logical inputs 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>active</em></code>:  (boolean) Whether or not the context is initially active. Defaults to false.</li>
+       <li><code><em>priority</em></code>:  (number) Determines the order in which the active contexts are applied. Higher priority results in later appliction. Defaults to 0.</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update"></a>
+    <strong>update&nbsp;(dt)</strong>
+    </dt>
+    <dd>
+    Map raw inputs to logical inputs using active input contexts 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>dt</em></code>:  (number) Time delta in seconds.</li>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
