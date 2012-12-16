@@ -47,36 +47,36 @@ love.update = function (dt)
   server.update(dt)
 end
 
-local OORT = 0.70710678118
-
 local context = input.newContext(true)
+
 context.map = function (raw, map)
   local dir = {x = 0, y = 0}
-  if raw.key.down["w"] and not raw.key.down["s"] then
-    if raw.key.down["a"] and not raw.key.down["d"] then
-      dir = {x = -OORT, y = OORT}
-    elseif raw.key.down["d"] and not raw.key.down["a"] then
-      dir = {x = OORT, y = OORT}
-    else
-      dir = {x = 0, y = 1}
-    end
-  elseif raw.key.down["s"] and not raw.key.down["w"] then
-    if raw.key.down["a"] and not raw.key.down["d"] then
-      dir = {x = -OORT, y = -OORT}
-    elseif raw.key.down["d"] and not raw.key.down["a"] then
-      dir = {x = OORT, y = -OORT}
-    else
-      dir = {x = 0, y = -1}
-    end
+
+  if raw.key.down["w"] 
+      and not raw.key.down["a"]
+      and not raw.key.down["s"]
+      and not raw.key.down["d"] then
+    dir = {x = 0, y = 1}
+  elseif raw.key.down["s"]
+      and not raw.key.down["d"] 
+      and not raw.key.down["w"] 
+      and not raw.key.down["a"] then
+    dir = {x = 0, y = -1}
+  elseif raw.key.down["a"]
+      and not raw.key.down["s"]
+      and not raw.key.down["d"]
+      and not raw.key.down["w"] then
+    dir = {x = -1, y = 0}
+  elseif raw.key.down["d"]
+      and not raw.key.down["w"] 
+      and not raw.key.down["a"]
+      and not raw.key.down["s"] then
+    dir = {x = 1, y = 0}
   else
-    if raw.key.down["a"] and not raw.key.down["d"] then
-      dir = {x = -1, y = 0}
-    elseif raw.key.down["d"] and not raw.key.down["a"] then
-      dir = {x = 1, y = 0}
-    else
-      dir = {x = 0, y = 0}
-    end
+    dir = {x = 0, y = 0}
   end
+
   map.ranges.move = dir
+
   return map
 end
