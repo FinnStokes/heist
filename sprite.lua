@@ -21,6 +21,7 @@ M.draw = function (ents)
             pos.x, pos.y,
             0, 1, 1,
             e.sprite.originX, e.sprite.originY)
+        end
       else
         love.graphics.circle("fill", pos.x, pos.y, e.sprite.r*math.abs(camera.xScale),30)
         if e.facing then
