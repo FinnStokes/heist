@@ -17,6 +17,7 @@ local new = function ()
   }
   player.facing = {x = 0, y = 1} --Unit vector of players facing direction
   player.velocity = {x = 0, y = 0} --Is this still necessary?
+  player.action = {type = "idle"}
   sprite.new(player, {
     image = resource.getImage("data/img/killer"),
     width = 16,
@@ -76,7 +77,7 @@ end
 event.subscribe("input", function (map)
   local player = entity.get("avatar")
   if player and player.position then
-    if map.ranges.move and not player.action then
+    if map.ranges.move and player.action and player.action.type == "idle" then
       if map.ranges.move.x ~= 0 or map.ranges.move.y ~= 0 then
         if map.ranges.move.x == player.facing.x and
             map.ranges.move.y == player.facing.y then
