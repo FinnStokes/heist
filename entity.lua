@@ -53,10 +53,11 @@ end
 
 --- Create a new entity.
 -- @return (table) The entity.
-M.new = function ()
+M.new = function (depth)
   local entity = {}
   entity.id = nextId
   nextId = nextId + 1
+  entity.depth = depth or 0
   table.insert(addQueue, entity)
   return entity
 end
@@ -80,7 +81,12 @@ end
 M.update = function (dt)
   for _,entity in ipairs(addQueue) do
     entitiesById[entity.id] = entity
-    table.insert(entityList, entity)
+    for k, v in ipairs(entityList) do
+      if v.depth < entity.depth do
+        table.insert(entityList, k, entity)
+        break
+      end
+    end
   end
   for _,t in ipairs(tagQueue) do
     entitiesByTag[t[2]] = t[1]
