@@ -3,6 +3,7 @@
 local entity = require("entity")
 local event = require("event")
 local input = require("input")
+local network = require("network")
 local physics = require("physics")
 local player = require("player")
 local server = require("server")
@@ -11,8 +12,11 @@ local system = require("system")
 local timing = require("timing")
 
 --Constants
-LISTEN_PORT = 44000
+IP = "129.127.25.57"
+PORT = "44000"
 SPEED = 200
+
+local isServer
 
 --- The draw callback for Love.
 love.draw = function ()
@@ -21,8 +25,6 @@ end
 
 --- The initialisation for Love.
 love.load = function ()
-  --server.start()
-  player.newLocal()
 end
 
 love.joystickpressed = function (joystick, button)
@@ -34,6 +36,20 @@ love.joystickreleased = function (joystick, button)
 end
 
 love.keypressed = function (key)
+  -- Handle client/server specialisation
+  if isServer == nil then
+    if key == "f10" then
+      -- Client
+      isServer = false
+      network.start(IP, PORT)
+    elseif key == "f11" then
+      -- Server
+      isServer = true
+      system.remove(network)
+      server.start()
+    end
+  end
+  
   input.keyPressed(key)
 end
 
@@ -43,12 +59,17 @@ end
 
 --- The update callback for Love.
 love.update = function (dt)
+  if isServer == nil then
+    return
+  elseif isServer == true then
+    server.update(dt)
+  end
+
   input.update(dt)
   event.update(dt)
   timing.update(dt)
   entity.update(dt)
   system.update(dt)
-  --server.update(dt)
 end
 
 local context = input.newContext(true)

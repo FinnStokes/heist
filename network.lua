@@ -4,7 +4,6 @@ local entity = require("entity")
 local player = require("player")
 local socket = require("socket")
 local system = require("system")
-local util = require("util")
 
 local address
 local commands = {}
@@ -17,7 +16,7 @@ local sock
 local timeOfLastPacket
 local latency
 
-local linkEntity(_local, net)
+local linkEntity = function (_local, net)
   local2net[_local] = net
   net2local[net] = _local
 end
@@ -33,7 +32,9 @@ M.start = function (address, port)
   sock:setpeername(address, port)
   
   -- Connect to server
+  netTime = 0
   timeOfLastPacket = socket.gettime()
+  
   sock:send("hi")
 end
 

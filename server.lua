@@ -50,7 +50,7 @@ end
 M.start = function ()
   sock = socket.udp()
   sock:settimeout(0)
-  sock:setsockname("*", LISTEN_PORT)
+  sock:setsockname("*", PORT)
   timer = 0
   
   -- Spawn the server's avatar
