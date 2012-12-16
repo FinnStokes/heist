@@ -6,6 +6,7 @@ local event = require("event")
 local player = require("player")
 local socket = require("socket")
 local timing = require("timing")
+local util = require("util")
 
 local commands = {}
 local local2net = {}
@@ -31,14 +32,18 @@ local linkPlayer = function (id, address)
   players.address2id[string.format("%s:%s", address.ip, address.port)] = id
 end
 
-local sendTo = function (packet, player)
-  local address = players.id2address[player]
+-- Send the packet to the player with playerId 
+local sendTo = function (packet, playerId)
+  local address = players.id2address[playerId]
   sock:sendto(packet, address.ip, address.port)
 end
 
-local sendToAll = function (packet)
+-- Send the packet to all players, except (optionally) playerId
+local sendToAll = function (packet, playerId)
   for id, address in pairs(players.id2address) do
-    sock:sendto(packet, address.ip, address.port)
+    if playerId ~= id then
+      sock:sendto(packet, address.ip, address.port)
+    end
   end
 end
 
@@ -96,6 +101,8 @@ end
 M.stop = function ()
   sock:close()
   sock = nil
+  
+  event.unsubscribe("newAction", onNewAction)
 end
 
 --- Update the server.
@@ -118,7 +125,10 @@ M.update = function (dt)
     
     -- Expects: "[command] [args...]"
     local cmd = data:match("^(%S*)")
-    local args = data:match("^%S* (.*)")
+    local args = data:match("^%S* (.*)") or ""
+    
+    -- Split the arguments into a table
+    args = args:split(" ")
     
     -- Call this commands handler
     local address = string.format("%s:%s", msg_or_ip, port_or_nil)
@@ -130,7 +140,7 @@ end
 -- Updates an entities facing
 commands.trn = function (playerId, args)
   local netId = players.entities[playerId]
-  local timestamp, x, y = args:match("^(%S*) (%S*) (%S*)$")
+  local timestamp, x, y = unpack(args)
   timestamp = tonumber(timestamp)
   x = tonumber(x)
   y = tonumber(y)
@@ -148,7 +158,7 @@ commands.trn = function (playerId, args)
     e.action.facing.y
   )
   
-  sendToAll(packet)
+  sendToAll(packet, playerId)
 end
 
 -- Acknowledge player connection
@@ -186,7 +196,7 @@ end
 -- Updates an entities position
 commands.mov = function (playerId, args)
   local netId = players.entities[playerId]
-  local timestamp, x, y = args:match("^(%S*) (%S*) (%S*)$")
+  local timestamp, x, y = unpack(args)
   timestamp = tonumber(timestamp)
   x = tonumber(x)
   y = tonumber(y)
@@ -207,7 +217,7 @@ commands.mov = function (playerId, args)
     e.location.y + e.action.delta.y
   )
   
-  sendToAll(packet)
+  sendToAll(packet, playerId)
 end
 
 -- Send back our time to sync the client

@@ -7,6 +7,7 @@ local player = require("player")
 local socket = require("socket")
 local system = require("system")
 local timing = require("timing")
+local util = require("util")
 
 local address
 local commands = {}
@@ -22,13 +23,6 @@ local latency
 local linkEntity = function (_local, net)
   local2net[_local] = net
   net2local[net] = _local
-end
-
-string.split = function (self, sep)
-  local sep, fields = sep or ":", {}
-  local pattern = string.format("([^%s]+)", sep)
-  self:gsub(pattern, function(c) fields[#fields+1] = c end)
-  return fields
 end
 
 local onNewAction = function (player)
@@ -76,6 +70,7 @@ end
 M.stop = function ()
   sock:close()
   sock = nil
+  event.unsubscribe("newAction", onNewAction)
 end
 
 --- Handle server messages and send our network updates.
@@ -93,9 +88,9 @@ M.step = function (dt, entities)
     
     -- Expects: "[cmd] [args...]"
     local cmd = data:match("^(%S*)")
-    local _, args = data:match("^(%S*) (.*)")
+    local args = data:match("^%S* (.*)") or ""
     
-    -- Split the arguments into table
+    -- Split the arguments into a table
     args = args:split(" ")
 
     commands[cmd](args)
