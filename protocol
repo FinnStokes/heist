@@ -1,0 +1,15 @@
+c: hi
+s: ok [netTime] [playerId]
+c: ok [netTime] [playerId]
+
+s: png 
+c: 
+
+c: trn [endTime] x y
+s: trn [endTime] [netId] x y
+
+c: mov [endTime] x y
+s: mov [endTime] [netId] x y
+
+c: bye
+s: bye
