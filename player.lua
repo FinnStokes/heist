@@ -41,8 +41,8 @@ event.subscribe("input", function (map)
         if map.ranges.move.x == player.facing.x and
             map.ranges.move.y == player.facing.y then
           player.action = action.newMove({
-            x = player.location.x + map.ranges.move.x,
-            y = player.location.y + map.ranges.move.y,
+            x = map.ranges.move.x,
+            y = map.ranges.move.y,
           })
         else
           player.action = action.newTurn({

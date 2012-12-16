@@ -8,6 +8,7 @@ local player = require("player")
 local server = require("server")
 local sprite = require("sprite")
 local system = require("system")
+local timing = require("timing")
 
 --Constants
 SPEED = 200
@@ -41,6 +42,7 @@ end
 
 --- The update callback for Love.
 love.update = function (dt)
+  timing.update(dt)
   input.update(dt)
   event.update(dt)
   entity.update(dt)

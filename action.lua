@@ -14,11 +14,17 @@ M.step = function (dt, ents)
   for _,e in ipairs(ents) do
     if e.action then
       if e.action.type == "moveTo" then
-        if e.location and e.position and e.velocity then
-          e.location = e.action.pos
-          e.position = {x = e.action.pos.x, y = e.action.pos.y}
+        if e.location and e.position then
           if timing.getTime() >= e.action.timestamp then
+            e.location = {x = e.location.x + e.action.delta.x, y = e.location.y + e.action.delta.y}
+            e.position = {x = e.location.x, y = e.location.y}
             e.action = nil
+          else
+            local frac =  1 - (e.action.timestamp - timing.getTime()) / e.action.dt
+            e.position = {
+              x = e.location.x + e.action.delta.x * frac,
+              y = e.location.y + e.action.delta.y * frac,
+            }
           end
         else
           e.action = nil
@@ -40,11 +46,13 @@ M.step = function (dt, ents)
   end
 end
 
-M.newMove = function (pos)
+M.newMove = function (delta, time)
+  time = time or 0.3
   local newAction = {
     type = "moveTo",
-    timestamp = timing.getTime() + 0.3,
-    pos = {x = pos.x, y = pos.y},
+    timestamp = timing.getTime() + time,
+    delta = {x = delta.x, y = delta.y},
+    dt = time,
   }
   return newAction
 end

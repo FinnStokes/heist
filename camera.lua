@@ -2,8 +2,8 @@
 
 local M = {}
 
-M.xScale = 16
-M.yScale = -16
+M.xScale = 64
+M.yScale = -64
 M.x = 0
 M.y = 5
 
