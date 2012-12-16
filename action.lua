@@ -1,6 +1,7 @@
 --- System for managigng player and guard actions
 
 local system = require("system")
+local timing = require("timing")
 
 local M = {}
 
@@ -16,14 +17,18 @@ M.step = function (dt, ents)
         if e.location and e.position and e.velocity then
           e.location = e.action.pos
           e.position = {x = e.action.pos.x, y = e.action.pos.y}
-          e.action = nil
+          if timing.getTime() >= e.action.timestamp then
+            e.action = nil
+          end
         else
           e.action = nil
         end
       elseif e.action.type == "turnTo" then
         if e.facing then
           e.facing = e.action.facing
-          e.action = nil
+          if timing.getTime() >= e.action.timestamp then
+            e.action = nil
+          end
         else
           e.action = nil
         end
@@ -38,6 +43,7 @@ end
 M.newMove = function (pos)
   local newAction = {
     type = "moveTo",
+    timestamp = timing.getTime() + 0.3,
     pos = {x = pos.x, y = pos.y},
   }
   return newAction
@@ -46,6 +52,7 @@ end
 M.newTurn = function (facing)
   local newAction = {
     type = "turnTo",
+    timestamp = timing.getTime() + 0.1,
     facing = {x = facing.x, y = facing.y},
   }
   return newAction
