@@ -1,9 +1,19 @@
 --- System for managigng player and guard actions
 
+local sprite = require("sprite")
 local system = require("system")
 local timing = require("timing")
 
 local M = {}
+
+M.facing = {}
+M.facing[0] = {}
+M.facing[1] = {}
+M.facing[-1] = {}
+M.facing[0][1] = "up"
+M.facing[0][-1] = "down"
+M.facing[1][0] = "right"
+M.facing[-1][0] = "left"
 
 system.add(M)
 
@@ -16,10 +26,12 @@ M.step = function (dt, ents)
       if e.action.type == "moveTo" then
         if e.location and e.position then
           if timing.getTime() >= e.action.timestamp then
+            sprite.play(e, "idle_" .. M.facing[e.facing.x][e.facing.y])
             e.location = {x = e.location.x + e.action.delta.x, y = e.location.y + e.action.delta.y}
             e.position = {x = e.location.x, y = e.location.y}
             e.action = nil
           else
+            sprite.play(e, M.facing[e.facing.x][e.facing.y])
             local frac =  1 - (e.action.timestamp - timing.getTime()) / e.action.dt
             e.position = {
               x = e.location.x + e.action.delta.x * frac,
@@ -32,6 +44,7 @@ M.step = function (dt, ents)
       elseif e.action.type == "turnTo" then
         if e.facing then
           e.facing = e.action.facing
+          sprite.play(e, "idle_" .. M.facing[e.facing.x][e.facing.y])
           if timing.getTime() >= e.action.timestamp then
             e.action = nil
           end

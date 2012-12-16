@@ -81,11 +81,16 @@ end
 M.update = function (dt)
   for _,entity in ipairs(addQueue) do
     entitiesById[entity.id] = entity
+    local inserted = false
     for k, v in ipairs(entityList) do
       if v.depth < entity.depth then
         table.insert(entityList, k, entity)
+        inserted = true
         break
       end
+    end
+    if not inserted then
+      table.insert(entityList, entity)
     end
   end
   for _,t in ipairs(tagQueue) do

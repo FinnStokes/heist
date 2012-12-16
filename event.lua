@@ -59,8 +59,10 @@ M.update = function (dt)
   local queue = noteQueue
   noteQueue = {}
   for _,t in ipairs(queue) do
-    for _,a in ipairs(subbed[t[1]]) do
-      a(t[2])
+    if subbed[t[1]] then
+      for _,a in ipairs(subbed[t[1]]) do
+        a(t[2])
+      end
     end
   end
 end

@@ -1,7 +1,8 @@
 --- The sprite manager.
 
-local system = require("system")
 local camera = require("camera")
+local event = require("event")
+local system = require("system")
 
 local M = {}
 
@@ -118,7 +119,7 @@ M.step = function (dt, ents)
         if anim.goto then
           M.play(e, anim.goto)
         else
-          anim.frame = anim.frame - frameCount
+          e.animation.frame = e.animation.frame - frameCount
         end
       end
 
