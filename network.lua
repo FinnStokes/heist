@@ -57,7 +57,8 @@ M.step = function (dt, entities)
     end
     
     -- Expects: "[cmd] [args...]"
-    local cmd, args = data:match("^(%S*) (.*)")
+    local cmd = data:match("^(%S*)")
+    local _, args = data:match("^(%S*) (.*)")
     
     -- Split the arguments into table, exclude command name
     args = table.remove(args:split(" "), 1)
@@ -68,16 +69,15 @@ end
 
 -- Change facing of a networked entity
 commands.fac = function (args)
-  local netId, x, y, vx, vy = args:match("^(%S*) (%S*) (%S*) (%S*) (%S*)")
-  assert(netId and x and y and vx and vy)
+  local netId, x, y = args:match("^(%S*) (%S*) (%S*)$")
   netId = tonumber(netId)
   x = tonumber(x)
   y = tonumber(y)
-  vx = tonumber(vx)
-  vy = tonumber(vy)
+  
+  -- Update local entity
   local e = entity.get(net2local[netId])
-  e.position.x = x
-  e.position.y = y
+  e.facing.x = x
+  e.facing.y = y
 end
 
 -- Server acknowledge
@@ -89,53 +89,28 @@ end
 
 -- Make a new networked entity
 commands.mk = function (args)
-  local theirPlayerId, netEntityId = args:match("^(%S*) (%S*)")
-  assert(theirPlayerId and netEntityId)
-  theirPlayerId = tonumber(theirPlayerId)
-  netEntityId = tonumber(netEntityId)
+  local netId, pid, type = args:match("^(%S*) (%S*) (%S*)")
+  netId = tonumber(netId)
   local newPlayer
-  if theirPlayerId == playerId then
+  if pid == playerId then
     newPlayer = player.newLocal()
   else
     newPlayer = player.newRemote()
   end
-  local2net[newPlayer.id] = netEntityId
-  net2local[netEntityId] = newPlayer.id
+  linkEntity(newPlayer.id, netEntityId)
 end
 
 -- Move a networked entity
 commands.mov = function (args)
-  local netId, x, y, vx, vy = args:match("^(%S*) (%S*) (%S*) (%S*) (%S*)")
-  assert(netId and x and y and vx and vy)
+  local netId, x, y = args:match("^(%S*) (%S*) (%S*)$")
   netId = tonumber(netId)
   x = tonumber(x)
   y = tonumber(y)
-  vx = tonumber(vx)
-  vy = tonumber(vy)
+  
+  -- Update local entity
   local e = entity.get(net2local[netId])
   e.position.x = x
   e.position.y = y
-  
-  if playerId then
-    -- Send our updates
-    if timer >= UPDATE_TIME then
-      timer = 0
-      for _,e in ipairs(entities) do
-        if e.network and e.position and e.velocity then
-          local netId = local2net[e.id]
-          packet = string.format(
-            "mov %u %f %f %f %f",
-            netId,
-            e.position.x,
-            e.position.y,
-            e.velocity.x,
-            e.velocity.y
-          )
-          sock:send(packet)
-        end
-      end
-    end
-  end
 end
 
 return M

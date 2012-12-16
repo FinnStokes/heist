@@ -17,9 +17,25 @@ local players = {
 local sock
 local timer
 
-local linkEntity(_local, net)
+local linkEntity = function (_local, net)
   local2net[_local] = net
   net2local[net] = _local
+end
+
+local linkPlayer = function (id, address)
+  players.id2address[id] = address
+  players.address2id[string.format("%S:%S", address.ip, address.port)] = id
+end
+
+local sendTo = function (packet, player)
+  local address = players.id2address[player]
+  sock:sendto(packet, address.ip, address.port)
+end
+
+local sendToAll = function (packet)
+  for id, address in pairs(players.id2address) do
+    sock:sendto(packet, address.ip, address.port)
+  end
 end
 
 local M = {}
@@ -63,16 +79,33 @@ M.update = function (dt)
     
     -- Expects: "[command] [args...]"
     local cmd = data:match("^(%S*)")
-    
-    local args = data:match("^%S* (.*)")
+    local _, args = data:match("^%S* (.*)")
     
     -- Call this commands handler
-    local address = tostring(msg_or_ip) .. tostring(port_or_nil)
+    local address = string.format("%S:%S", msg_or_ip, port_or_nil)
     local playerId = players.address2id[address]
     commands[cmd](playerId, args)
   end
-  
+end
 
+-- Updates an entities facing
+commands.fac = function (playerId, args)
+  local netId, x, y = args:match("^(%S*) (%S*) (%S*)$")
+  netId = tonumber(netId)
+  x = tonumber(x)
+  y = tonumber(y)
+
+  -- Update local entity position
+  local e = entity.get(net2local[netId])
+  e.position.x, e.position.y = x, y
+
+  -- Notify other players
+  local packet = string.format("fac %u %u %f %f",
+    netTime,
+    netId,
+    x,
+    y
+  )
 end
 
 -- Acknowledge player connection
@@ -80,69 +113,57 @@ commands.hi = function (playerId, args)
   -- A new player is connecting
   local id = players.nextId
   players.nextId = players.nextId + 1
-  
   local address = {
     ip = msg_or_ip,
     port = port_or_nil,
   }
-  
-  players.id2address[id] = address
-  players.address2id[tostring(ip) .. tostring(port)] = id
+  linkPlayer(id, address)
   
   -- Tell the player they are connected
-  sock:sendto("ok " .. id, msg_or_ip, port_or_nil)
+  local packet = string.format("ok %u %u", netTime, id)
+  sock:sendto(packet, msg_or_ip, port_or_nil)
   
   -- Spawn existing players on the new client
-  for playerId,netId in pairs(players.entities) do
-    local packet = string.format("mk %s %s", playerId, netId)
+  for playerId, netId in pairs(players.entities) do
+    local packet = string.format("mk %u %u %s", nextEntityId, id, "player")
     sock:sendto(packet, msg_or_ip, port_or_nil)
   end
   
-  -- Spawn this new player on each client
-  local packet = string.format("mk %s %s",id, nextEntityId)
+  -- Spawn the new player's avatar on each client
+  local packet = string.format("mk %u %u %s", nextEntityId, id, "player")
   local newPlayer = player.newRemote()
   newPlayer.network = {}
-  local2net[newPlayer.id] = nextEntityId
-  net2local[nextEntityId] = newPlayer.id
+  linkEntity(newPlayer.id, nextEntityId)
   players.entities[id] = nextEntityId
   nextEntityId = nextEntityId + 1
-  for id,address in pairs(players.id2address) do
-    sock:sendto(packet, address.ip, address.port)
-  end
+  sendToAll(packet)
 end
 
--- Updates the player position
+-- Updates an entities position
 commands.mov = function (playerId, args)
-  local id, x, y, vx, vy = args:match("^(%S*) (%S*) (%S*) (%S*) (%S*)$")
-  assert(id and x and y and vx and vy)
-  id, x, y, vx, vy = tonumber(id), tonumber(x), tonumber(y), tonumber(vx), tonumber(vy)
-  local e = entity.get(net2local[id])
-  e.position.x, e.position.y = x, y
-  e.velocity.x, e.velocity.y = vx, vy
+  local netId, x, y = args:match("^(%S*) (%S*) (%S*)$")
+  netId = tonumber(netId)
+  x = tonumber(x)
+  y = tonumber(y)
 
-  timer = timer + dt
-  if timer >= UPDATE_TIME then
-    timer = 0
-    
-    -- Compose update packet
-    local packet
-    for _, e in ipairs(entity.all()) do
-      if e.network then
-        local netId = local2net[e.id]
-        packet = "mov " .. netId .. " "
-        if e.position then
-          packet = packet .. tostring(e.position.x) .. " "
-          packet = packet .. tostring(e.position.y) .. " "
-          packet = packet .. tostring(e.velocity.y) .. " "
-          packet = packet .. tostring(e.velocity.y) .. " "
-        end
-      end
-      -- Send packet to all players
-      for id,address in pairs(players.id2address) do
-        sock:sendto(packet, address.ip, address.port)
-      end
-    end
-  end
+  -- Update local entity position
+  local e = entity.get(net2local[netId])
+  e.position.x, e.position.y = x, y
+
+  -- Notify other players
+  local packet = string.format("mov %u %u %f %f",
+    netTime,
+    netId,
+    x,
+    y
+  )
+  
+end
+
+-- Send back our netTime to sync the client
+commands.png = function (playerId, args)
+  local packet = string.format("png %u", netTime)
+  sendTo(packet, playerId)
 end
 
 return M
