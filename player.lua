@@ -3,14 +3,20 @@
 
 local entity = require("entity")
 local event = require("event")
+local action = require("action")
 
 local M = {}
 
 local new = function ()
   local player = entity.new()
   player.sprite = {r = 20}
-  player.position = {x = 100, y = 100}
-  player.velocity = {x = 0, y = 0}
+  player.location = {x = 5, y = 10} --Logical integer position
+  player.position = { --Fractional measure of your current position
+    x = player.location.x,
+    y = player.location.y,
+  }
+  player.facing = {x = 0, y = 1} --Unit vector of players facing direction
+  player.velocity = {x = 0, y = 0} --Is this still necessary?
   entity.group(player, "players")
   return player
 end
@@ -30,9 +36,21 @@ end
 event.subscribe("input", function (map)
   local player = entity.get("avatar")
   if player and player.position then
-    if map.ranges.move then
-      player.velocity.x = SPEED*map.ranges.move.x
-      player.velocity.y = SPEED*map.ranges.move.y
+    if map.ranges.move and not player.action then
+      if map.ranges.move.x ~= 0 and map.ranges.move.y ~= 0 then
+        if map.ranges.move.x == player.facing.x and
+            map.ranges.move.y == player.facing.y then
+          player.action = action.newMove({
+            x = player.location.x + map.ranges.move.x,
+            y = player.location.y + map.ranges.move.y,
+          })
+        else
+          player.action = action.newTurn({
+            x = map.ranges.move.x,
+            y = map.ranges.move.y,
+          })
+        end
+      end
     end
   end
 end)
