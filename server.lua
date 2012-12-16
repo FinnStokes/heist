@@ -1,11 +1,15 @@
 --- The game server module.
 
+local action = require("action")
 local entity = require("entity")
+local event = require("event")
 local player = require("player")
 local socket = require("socket")
+local timing = require("timing")
 
 local commands = {}
 local local2net = {}
+local msg_or_ip, port_or_nil
 local net2local = {}
 local nextEntityId = 1
 local players = {
@@ -24,7 +28,7 @@ end
 
 local linkPlayer = function (id, address)
   players.id2address[id] = address
-  players.address2id[string.format("%S:%S", address.ip, address.port)] = id
+  players.address2id[string.format("%s:%s", address.ip, address.port)] = id
 end
 
 local sendTo = function (packet, player)
@@ -35,6 +39,31 @@ end
 local sendToAll = function (packet)
   for id, address in pairs(players.id2address) do
     sock:sendto(packet, address.ip, address.port)
+  end
+end
+
+local onNewAction = function (player)
+  if player.action then
+    local netId = local2net[player.id]
+    local packet
+    if player.action.type == "turnTo" then
+      packet = string.format(
+        "trn %f %u %i %i",
+        player.action.timestamp,
+        netId,
+        player.action.facing.x,
+        player.action.facing.y
+      )
+    elseif player.action.type == "moveTo" then
+      packet = string.format(
+        "mov %f %u %i %i",
+        player.action.timestamp,
+        netId,
+        player.location.x + player.action.delta.x,
+        player.location.y + player.action.delta.y
+      )
+    end
+    sendToAll(packet)
   end
 end
 
@@ -52,6 +81,8 @@ M.start = function ()
   sock:settimeout(0)
   sock:setsockname("*", PORT)
   timer = 0
+  
+  event.subscribe("newAction", onNewAction)
   
   -- Spawn the server's avatar
   local newPlayer = player.newLocal()
@@ -72,7 +103,8 @@ end
 M.update = function (dt)
   -- Handle network messages
   while true do
-    local data, msg_or_ip, port_or_nil = sock:receivefrom()
+    local data
+    data, msg_or_ip, port_or_nil = sock:receivefrom()
 
     if data == nil then
       if msg_or_ip == "timeout" then
@@ -86,32 +118,34 @@ M.update = function (dt)
     
     -- Expects: "[command] [args...]"
     local cmd = data:match("^(%S*)")
-    local _, args = data:match("^%S* (.*)")
+    local args = data:match("^%S* (.*)")
     
     -- Call this commands handler
-    local address = string.format("%S:%S", msg_or_ip, port_or_nil)
+    local address = string.format("%s:%s", msg_or_ip, port_or_nil)
     local playerId = players.address2id[address]
     commands[cmd](playerId, args)
   end
 end
 
 -- Updates an entities facing
-commands.fac = function (playerId, args)
-  local netId, x, y = args:match("^(%S*) (%S*) (%S*)$")
-  netId = tonumber(netId)
+commands.trn = function (playerId, args)
+  local netId = players.entities[playerId]
+  local timestamp, x, y = args:match("^(%S*) (%S*) (%S*)$")
+  timestamp = tonumber(timestamp)
   x = tonumber(x)
   y = tonumber(y)
 
   -- Update local entity position
   local e = entity.get(net2local[netId])
-  e.position.x, e.position.y = x, y
+  e.action = action.newTurn({x=x, y=y}, timestamp)
 
   -- Notify other players
-  local packet = string.format("fac %u %u %f %f",
-    netTime,
+  local packet = string.format(
+    "trn %f %u %i %i",
+    e.action.timestamp,
     netId,
-    x,
-    y
+    e.action.facing.x,
+    e.action.facing.y
   )
   
   sendToAll(packet)
@@ -129,51 +163,56 @@ commands.hi = function (playerId, args)
   linkPlayer(id, address)
   
   -- Tell the player they are connected
-  local packet = string.format("ok %u %u", netTime, id)
+  local packet = string.format("ok %u %u", timing.getTime(), id)
   sock:sendto(packet, msg_or_ip, port_or_nil)
   
   -- Spawn existing players on the new client
-  for playerId, netId in pairs(players.entities) do
-    local packet = string.format("mk %u %u %s", nextEntityId, id, "player")
+  for pid, netId in pairs(players.entities) do
+    local packet = string.format("mk %u %u %s", netId, pid, "player")
     sock:sendto(packet, msg_or_ip, port_or_nil)
   end
   
   -- Spawn the new player's avatar on each client
   local packet = string.format("mk %u %u %s", nextEntityId, id, "player")
+  sendToAll(packet)
+  
   local newPlayer = player.newRemote()
   newPlayer.network = {}
   linkEntity(newPlayer.id, nextEntityId)
   players.entities[id] = nextEntityId
   nextEntityId = nextEntityId + 1
-  
-  sendToAll(packet)
 end
 
 -- Updates an entities position
 commands.mov = function (playerId, args)
-  local netId, x, y = args:match("^(%S*) (%S*) (%S*)$")
-  netId = tonumber(netId)
+  local netId = players.entities[playerId]
+  local timestamp, x, y = args:match("^(%S*) (%S*) (%S*)$")
+  timestamp = tonumber(timestamp)
   x = tonumber(x)
   y = tonumber(y)
 
   -- Update local entity position
   local e = entity.get(net2local[netId])
-  e.position.x, e.position.y = x, y
+  e.action = action.newMove({
+    x = x - e.location.x,
+    y = y - e.location.y,
+  }, timestamp)
 
   -- Notify other players
-  local packet = string.format("mov %u %u %f %f",
-    netTime,
+  local packet = string.format(
+    "mov %f %u %i %i",
+    e.action.timestamp,
     netId,
-    x,
-    y
+    e.location.x + e.action.delta.x,
+    e.location.y + e.action.delta.y
   )
   
   sendToAll(packet)
 end
 
--- Send back our netTime to sync the client
+-- Send back our time to sync the client
 commands.png = function (playerId, args)
-  local packet = string.format("png %u", netTime)
+  local packet = string.format("png %u", timing.getTime())
   sendTo(packet, playerId)
 end
 

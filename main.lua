@@ -14,7 +14,7 @@ local system = require("system")
 local timing = require("timing")
 
 --Constants
-IP = "129.127.25.57"
+IP = "127.0.0.1"
 PORT = "44000"
 SPEED = 200
 

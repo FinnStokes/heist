@@ -63,20 +63,20 @@ M.step = function (dt, ents)
 end
 
 M.newMove = function (delta, time)
-  time = time or 0.3
+  time = time or (timing.getTime() + 0.3)
   local newAction = {
     type = "moveTo",
-    timestamp = timing.getTime() + time,
+    timestamp = time,
     delta = {x = delta.x, y = delta.y},
-    dt = time,
+    dt = time - timing.getTime(),
   }
   return newAction
 end
 
-M.newTurn = function (facing)
+M.newTurn = function (facing, time)
   local newAction = {
     type = "turnTo",
-    timestamp = timing.getTime() + 0.1,
+    timestamp = time or (timing.getTime() + 0.1),
     facing = {x = facing.x, y = facing.y},
   }
   return newAction

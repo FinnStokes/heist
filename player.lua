@@ -91,6 +91,7 @@ event.subscribe("input", function (map)
             y = map.ranges.move.y,
           })
         end
+        event.notify("newAction", player)
       end
     end
   end
