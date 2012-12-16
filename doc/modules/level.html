@@ -41,9 +41,9 @@
   <li><a href="../modules/action.html">action</a></li>
   <li><a href="../modules/camera.html">camera</a></li>
   <li><a href="../modules/entity.html">entity</a></li>
-  <li><strong>event</strong></li>
+  <li><a href="../modules/event.html">event</a></li>
   <li><a href="../modules/input.html">input</a></li>
-  <li><a href="../modules/level.html">level</a></li>
+  <li><strong>level</strong></li>
   <li><a href="../modules/main.html">main</a></li>
   <li><a href="../modules/network.html">network</a></li>
   <li><a href="../modules/physics.html">physics</a></li>
@@ -63,9 +63,9 @@
 
 <div id="content">
 
-<h1>Module <code>event</code></h1>
+<h1>Module <code>level</code></h1>
 
-<p>The event manager.</p>
+<p>The level loader</p>
 <p>
 
 </p>
@@ -73,20 +73,16 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#notify">notify&nbsp;(event, data)</a></td>
-	<td class="summary">Called to put into action anything corresponding to a particular event.</td>
+	<td class="name" nowrap><a href="#draw">draw&nbsp;(ents)</a></td>
+	<td class="summary">The draw function for levels</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#subscribe">subscribe&nbsp;(event, action)</a></td>
-	<td class="summary">Subscribe an action to a particular event.</td>
+	<td class="name" nowrap><a href="#getTileProperties">getTileProperties&nbsp;(pos)</a></td>
+	<td class="summary">A getter method for the properties of a tile</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#unsubscribe">unsubscribe&nbsp;(event, action)</a></td>
-	<td class="summary">Remove an action from a particular event.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#update">update&nbsp;(dt)</a></td>
-	<td class="summary">Called each tick to process the events.</td>
+	<td class="name" nowrap><a href="#new">new&nbsp;(data)</a></td>
+	<td class="summary">The constructor for the level</td>
 	</tr>
 </table>
 
@@ -98,16 +94,15 @@
     
     <dl class="function">
     <dt>
-    <a name = "notify"></a>
-    <strong>notify&nbsp;(event, data)</strong>
+    <a name = "draw"></a>
+    <strong>draw&nbsp;(ents)</strong>
     </dt>
     <dd>
-    Called to put into action anything corresponding to a particular event. 
+    The draw function for levels 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>event</em></code>:  (string) The event identifier.</li>
-       <li><code><em>data</em></code>:  (table) The data to pass to subscribed actions.</li>
+       <li><code><em>ents</em></code>:  (table) A list of entities to draw (if it has a level)</li>
     </ul>
 
 
@@ -115,16 +110,15 @@
 
 </dd>
     <dt>
-    <a name = "subscribe"></a>
-    <strong>subscribe&nbsp;(event, action)</strong>
+    <a name = "getTileProperties"></a>
+    <strong>getTileProperties&nbsp;(pos)</strong>
     </dt>
     <dd>
-    Subscribe an action to a particular event. 
+    A getter method for the properties of a tile 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>event</em></code>:  (string) The event identifier.</li>
-       <li><code><em>action</em></code>:  (function) The function to call to handle the event.</li>
+       <li><code><em>pos</em></code>:  (table) The position given as {x = blah, y = blah}</li>
     </ul>
 
 
@@ -132,32 +126,15 @@
 
 </dd>
     <dt>
-    <a name = "unsubscribe"></a>
-    <strong>unsubscribe&nbsp;(event, action)</strong>
+    <a name = "new"></a>
+    <strong>new&nbsp;(data)</strong>
     </dt>
     <dd>
-    Remove an action from a particular event. 
+    The constructor for the level 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>event</em></code>:  (string) The event identifier.</li>
-       <li><code><em>action</em></code>:  (function) The function to unsubscribe from the event.</li>
-    </ul>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "update"></a>
-    <strong>update&nbsp;(dt)</strong>
-    </dt>
-    <dd>
-    Called each tick to process the events. 
-
-    <h3>Parameters:</h3>
-    <ul>
-       <li><code><em>dt</em></code>:  (number) Time delta in seconds.</li>
+       <li><code><em>data</em></code>:  (table) The data for the level to construct</li>
     </ul>
 
 

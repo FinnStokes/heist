@@ -43,6 +43,7 @@
   <li><a href="../modules/entity.html">entity</a></li>
   <li><a href="../modules/event.html">event</a></li>
   <li><a href="../modules/input.html">input</a></li>
+  <li><a href="../modules/level.html">level</a></li>
   <li><a href="../modules/main.html">main</a></li>
   <li><a href="../modules/network.html">network</a></li>
   <li><a href="../modules/physics.html">physics</a></li>
@@ -72,8 +73,24 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#draw">draw&nbsp;(dt, ents)</a></td>
+	<td class="name" nowrap><a href="#draw">draw&nbsp;(ents)</a></td>
 	<td class="summary">Draw a sprite from the given list of entities</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hide">hide&nbsp;(e, h)</a></td>
+	<td class="summary">Set an entities sprite as hidden or not</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#new">new&nbsp;(e, t)</a></td>
+	<td class="summary">Constructor for a sprite to be added to an entity</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#play">play&nbsp;(e, animation)</a></td>
+	<td class="summary">Play an entities animation</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#step">step&nbsp;(dt, ents)</a></td>
+	<td class="summary">The system step method</td>
 	</tr>
 </table>
 
@@ -86,15 +103,82 @@
     <dl class="function">
     <dt>
     <a name = "draw"></a>
-    <strong>draw&nbsp;(dt, ents)</strong>
+    <strong>draw&nbsp;(ents)</strong>
     </dt>
     <dd>
     Draw a sprite from the given list of entities 
 
     <h3>Parameters:</h3>
     <ul>
-       <li><code><em>dt</em></code>:  (number) Time delta in seconds.</li>
        <li><code><em>ents</em></code>:  (table) A list of entities with sprites (ignored if no sprite).</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hide"></a>
+    <strong>hide&nbsp;(e, h)</strong>
+    </dt>
+    <dd>
+    Set an entities sprite as hidden or not 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>e</em></code>:  The entity to hide/unhide</li>
+       <li><code><em>h</em></code>:  (boolean) Hidden?</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "new"></a>
+    <strong>new&nbsp;(e, t)</strong>
+    </dt>
+    <dd>
+    Constructor for a sprite to be added to an entity 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>e</em></code>:  The entity to add the sprite to</li>
+       <li><code><em>t</em></code>:  (table) A table containing the sprite data to add</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "play"></a>
+    <strong>play&nbsp;(e, animation)</strong>
+    </dt>
+    <dd>
+    Play an entities animation 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>e</em></code>:  The entity to work on</li>
+       <li><code><em>animation</em></code>:  (key) The animation to play</li>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "step"></a>
+    <strong>step&nbsp;(dt, ents)</strong>
+    </dt>
+    <dd>
+    The system step method 
+
+    <h3>Parameters:</h3>
+    <ul>
+       <li><code><em>dt</em></code>:  The time delta in seconds</li>
+       <li><code><em>ents</em></code>:  (table) A list of entities to update</li>
     </ul>
 
 
