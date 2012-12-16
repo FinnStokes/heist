@@ -82,7 +82,7 @@ M.update = function (dt)
   for _,entity in ipairs(addQueue) do
     entitiesById[entity.id] = entity
     for k, v in ipairs(entityList) do
-      if v.depth < entity.depth do
+      if v.depth < entity.depth then
         table.insert(entityList, k, entity)
         break
       end
