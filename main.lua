@@ -3,9 +3,11 @@
 local entity = require("entity")
 local event = require("event")
 local input = require("input")
+local level = require("level")
 local network = require("network")
 local physics = require("physics")
 local player = require("player")
+local resource = require("resource")
 local server = require("server")
 local sprite = require("sprite")
 local system = require("system")
@@ -25,6 +27,8 @@ end
 
 --- The initialisation for Love.
 love.load = function ()
+  local map = resource.getScript("data/img/level")
+  local lvl = level.new(map)
 end
 
 love.joystickpressed = function (joystick, button)

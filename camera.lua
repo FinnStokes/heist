@@ -5,7 +5,7 @@ local M = {}
 M.xScale = 16
 M.yScale = -16
 M.x = 0
-M.y = 5
+M.y = 36
 
 --- A method to convert world coords to screen coords
 -- @param pos (table) The world coords to convert

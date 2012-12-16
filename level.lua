@@ -87,10 +87,10 @@ M.new = function (data)
   
   -- tile data
   e.level.tiledata = {}
-  for x=1,data.layers[tilelayer].width do
+  for x=1,data.layers[tileLayer].width do
     e.level.tiledata[x] = {}
-    for y=1,data.layers[tilelayer].height do
-      e.level.tiledata[x][y] = data.layers[tilelayer].data[x + ((y - 1) * data.layers[tilelayer].width)]
+    for y=1,data.layers[tileLayer].height do
+      e.level.tiledata[x][data.layers[tileLayer].height - y + 1] = data.layers[tileLayer].data[x + ((y - 1) * data.layers[tileLayer].width)]
       event.notify("tileCreation", {x=x, y=y})
     end
   end
@@ -103,7 +103,7 @@ M.new = function (data)
   
   -- render info
   e.level.tileset = {}
-  e.level.tileset.image = love.graphics.newImage(data.tilesets[1].image) --may need prefix
+  e.level.tileset.image = love.graphics.newImage("data/img/"..data.tilesets[1].image) --may need prefix
   e.level.tileset.quads = {}
   local max_tiles = data.tilesets[1].tilewidth * data.tilesets[1].tileheight
   local tiles_x = data.tilesets[1].imagewidth / data.tilesets[1].tilewidth
