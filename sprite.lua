@@ -8,7 +8,6 @@ local M = {}
 system.add(M)
 
 --- Draw a sprite from the given list of entities
--- @param dt (number) Time delta in seconds.
 -- @param ents (table) A list of entities with sprites (ignored if no sprite).
 M.draw = function (ents)
   for _,e in ipairs(ents) do
@@ -33,6 +32,9 @@ M.draw = function (ents)
   end
 end
 
+--- Set an entities sprite as hidden or not
+-- @param e The entity to hide/unhide
+-- @param h (boolean) Hidden?
 M.hide = function (e, h)
   if e.sprite then
     e.sprite.hidden = h and true
@@ -41,6 +43,9 @@ M.hide = function (e, h)
   end
 end
 
+--- Constructor for a sprite to be added to an entity
+-- @param e The entity to add the sprite to
+-- @param t (table) A table containing the sprite data to add
 M.new = function (e, t)
   e.sprite = {
     image = t.image,
@@ -66,6 +71,9 @@ M.new = function (e, t)
   end
 end
 
+--- Play an entities animation
+-- @param e The entity to work on
+-- @param animation (key) The animation to play
 M.play = function (e, animation)
   if e.animation then
     if e.animation.data[animation] and
@@ -79,6 +87,9 @@ M.play = function (e, animation)
   end
 end
 
+--- The system step method
+-- @param dt The time delta in seconds
+-- @param ents (table) A list of entities to update
 M.step = function (dt, ents)
   for _,e in ipairs(ents) do
     if e.sprite and e.animation then

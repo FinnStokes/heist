@@ -7,6 +7,9 @@ M.yScale = -64
 M.x = 0
 M.y = 5
 
+--- A method to convert world coords to screen coords
+-- @param pos (table) The world coords to convert
+-- @return (table) The corresponding screen coords
 M.worldToScreen = function (pos)
   return {
     x = (pos.x - M.x)*M.xScale,
@@ -14,6 +17,9 @@ M.worldToScreen = function (pos)
   }
 end
 
+--- A method to convert screen coords to world coords
+-- @param pos (table) The screen coords to convert
+-- @return (table) The corresponding world coords
 M.screenToWorld = function (pos)
   return {
     x = (pos.x/M.xScale) + M.x,
