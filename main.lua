@@ -11,6 +11,7 @@ local system = require("system")
 local timing = require("timing")
 
 --Constants
+LISTEN_PORT = 44000
 SPEED = 200
 
 --- The draw callback for Love.

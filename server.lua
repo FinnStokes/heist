@@ -1,8 +1,5 @@
 --- The game server module.
 
-local LISTEN_PORT = 44000
-local UPDATE_TIME = 0.1
-
 local entity = require("entity")
 local player = require("player")
 local socket = require("socket")
@@ -19,6 +16,11 @@ local players = {
 }
 local sock
 local timer
+
+local linkEntity(_local, net)
+  local2net[_local] = net
+  net2local[net] = _local
+end
 
 local M = {}
 
@@ -39,6 +41,7 @@ end
 --- Stop the server.
 M.stop = function ()
   sock:close()
+  sock = nil
 end
 
 --- Update the server.
@@ -61,49 +64,62 @@ M.update = function (dt)
     -- Expects: "[command] [args...]"
     local cmd = data:match("^(%S*)")
     
-    if cmd == "connect" then
-      -- A new player is connecting
-      local id = players.nextId
-      players.nextId = players.nextId + 1
-      
-      local address = {
-        ip = msg_or_ip,
-        port = port_or_nil,
-      }
-      
-      players.id2address[id] = address
-      players.address2id[tostring(ip) .. tostring(port)] = id
-      
-      -- Tell the player they are connected
-      sock:sendto("connected " .. id, msg_or_ip, port_or_nil)
-      
-      -- Spawn existing players on the new client
-      for playerId,netId in pairs(players.entities) do
-        local packet = string.format("makePlayer %s %s", playerId, netId)
-        sock:sendto(packet, msg_or_ip, port_or_nil)
-      end
-      
-      -- Spawn this new player on each client
-      local packet = string.format("makePlayer %s %s",id, nextEntityId)
-      local newPlayer = player.newRemote()
-      newPlayer.network = {}
-      local2net[newPlayer.id] = nextEntityId
-      net2local[nextEntityId] = newPlayer.id
-      players.entities[id] = nextEntityId
-      nextEntityId = nextEntityId + 1
-      for id,address in pairs(players.id2address) do
-        sock:sendto(packet, address.ip, address.port)
-      end
-    else
-      local args = data:match("^%S* (.*)")
-      
-      -- Call this commands handler
-      local address = tostring(msg_or_ip) .. tostring(port_or_nil)
-      local playerId = players.address2id[address]
-      commands[cmd](playerId, args)
-    end
+    local args = data:match("^%S* (.*)")
+    
+    -- Call this commands handler
+    local address = tostring(msg_or_ip) .. tostring(port_or_nil)
+    local playerId = players.address2id[address]
+    commands[cmd](playerId, args)
   end
   
+
+end
+
+-- Acknowledge player connection
+commands.hi = function (playerId, args)
+  -- A new player is connecting
+  local id = players.nextId
+  players.nextId = players.nextId + 1
+  
+  local address = {
+    ip = msg_or_ip,
+    port = port_or_nil,
+  }
+  
+  players.id2address[id] = address
+  players.address2id[tostring(ip) .. tostring(port)] = id
+  
+  -- Tell the player they are connected
+  sock:sendto("ok " .. id, msg_or_ip, port_or_nil)
+  
+  -- Spawn existing players on the new client
+  for playerId,netId in pairs(players.entities) do
+    local packet = string.format("mk %s %s", playerId, netId)
+    sock:sendto(packet, msg_or_ip, port_or_nil)
+  end
+  
+  -- Spawn this new player on each client
+  local packet = string.format("mk %s %s",id, nextEntityId)
+  local newPlayer = player.newRemote()
+  newPlayer.network = {}
+  local2net[newPlayer.id] = nextEntityId
+  net2local[nextEntityId] = newPlayer.id
+  players.entities[id] = nextEntityId
+  nextEntityId = nextEntityId + 1
+  for id,address in pairs(players.id2address) do
+    sock:sendto(packet, address.ip, address.port)
+  end
+end
+
+-- Updates the player position
+commands.mov = function (playerId, args)
+  local id, x, y, vx, vy = args:match("^(%S*) (%S*) (%S*) (%S*) (%S*)$")
+  assert(id and x and y and vx and vy)
+  id, x, y, vx, vy = tonumber(id), tonumber(x), tonumber(y), tonumber(vx), tonumber(vy)
+  local e = entity.get(net2local[id])
+  e.position.x, e.position.y = x, y
+  e.velocity.x, e.velocity.y = vx, vy
+
   timer = timer + dt
   if timer >= UPDATE_TIME then
     timer = 0
@@ -113,7 +129,7 @@ M.update = function (dt)
     for _, e in ipairs(entity.all()) do
       if e.network then
         local netId = local2net[e.id]
-        packet = "move " .. netId .. " "
+        packet = "mov " .. netId .. " "
         if e.position then
           packet = packet .. tostring(e.position.x) .. " "
           packet = packet .. tostring(e.position.y) .. " "
@@ -127,16 +143,6 @@ M.update = function (dt)
       end
     end
   end
-end
-
--- Updates the player position
-commands.move = function (playerId, args)
-  local id, x, y, vx, vy = args:match("^(%S*) (%S*) (%S*) (%S*) (%S*)$")
-  assert(id and x and y and vx and vy)
-  id, x, y, vx, vy = tonumber(id), tonumber(x), tonumber(y), tonumber(vx), tonumber(vy)
-  local e = entity.get(net2local[id])
-  e.position.x, e.position.y = x, y
-  e.velocity.x, e.velocity.y = vx, vy
 end
 
 return M
