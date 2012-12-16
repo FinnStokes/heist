@@ -9,8 +9,8 @@ local M = {}
 
 local new = function ()
   local player = entity.new()
-  player.sprite = {r = 20}
-  player.location = {x = 5, y = 10} --Logical integer position
+  player.sprite = {r = 0.5}
+  player.location = {x = 0, y = 0} --Logical integer position
   player.position = { --Fractional measure of your current position
     x = player.location.x,
     y = player.location.y,
@@ -37,7 +37,7 @@ event.subscribe("input", function (map)
   local player = entity.get("avatar")
   if player and player.position then
     if map.ranges.move and not player.action then
-      if map.ranges.move.x ~= 0 and map.ranges.move.y ~= 0 then
+      if map.ranges.move.x ~= 0 or map.ranges.move.y ~= 0 then
         if map.ranges.move.x == player.facing.x and
             map.ranges.move.y == player.facing.y then
           player.action = action.newMove({

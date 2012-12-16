@@ -19,7 +19,8 @@ end
 
 --- The initialisation for Love.
 love.load = function ()
-  server.start()
+  --server.start()
+  player.newLocal()
 end
 
 love.joystickpressed = function (joystick, button)
@@ -44,13 +45,13 @@ love.update = function (dt)
   event.update(dt)
   entity.update(dt)
   system.update(dt)
-  server.update(dt)
+  --server.update(dt)
 end
 
 local context = input.newContext(true)
 
 context.map = function (raw, map)
-  local dir = {x = 0, y = 0}
+  local dir = nil
 
   if raw.key.down["w"] 
       and not raw.key.down["a"]
@@ -73,7 +74,7 @@ context.map = function (raw, map)
       and not raw.key.down["s"] then
     dir = {x = 1, y = 0}
   else
-    dir = {x = 0, y = 0}
+    dir = nil
   end
 
   map.ranges.move = dir

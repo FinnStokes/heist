@@ -2,10 +2,10 @@
 
 local M = {}
 
-M.xScale = 1
-M.yScale = -1
+M.xScale = 20
+M.yScale = -20
 M.x = 0
-M.y = 500
+M.y = 5
 
 M.worldToScreen = function (pos)
   return {

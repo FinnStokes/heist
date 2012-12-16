@@ -15,6 +15,10 @@ M.draw = function (ents)
     if e.sprite and e.position then
       local pos = camera.worldToScreen(e.position)
       love.graphics.circle("fill", pos.x, pos.y, e.sprite.r*math.abs(camera.xScale),30)
+      if e.facing then
+        local pos2 = camera.worldToScreen({x = e.position.x + e.facing.x, y = e.position.y + e.facing.y})
+        love.graphics.line(pos.x, pos.y, pos2.x, pos2.y)
+      end
     end
   end
 end
