@@ -1,11 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="16" tileheight="16">
+<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="16" tileheight="16">
  <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16">
   <image source="tileset.png" width="256" height="256"/>
+  <tile id="0">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="solid" value="true"/>
+   </properties>
+  </tile>
  </tileset>
- <layer name="Tile Layer 1" width="50" height="50">
+ <layer name="Tile Layer 1" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJztlWEKgzAMhbvuBOoJWm/i/Q+1DizE0FZlY8ng+/GhxIrv5aV1CyFsAAAAAADwEbHwaPB0oO0OUyEVsmDd69bazvote93T682H7ve717PwtCjd2ZEPmcHSeV69rXttvpiTVQZVZ1T3+p2ktMvMrPZ8q5ey1vKh18g+WGVTv1v7KWtJ5JLCcQa97fmW5isadR5n71rPlSQ3dP9jHj1iGJ95Vnnkzlr9b7HOQPKNM9ODj5an6qfmMqmrPGdjsJulu/3VfjxnMcplpNmzD+1nhNeZAgAAAAAAAPg1L9GgaSs=
+   eJzNk0sOwCAIRNXaA2g9kfc/VF1oQiZQUJu0i0kIgcdPq3OufqCj6WIUF3mh6WQUJurHDR4XHwi7dJ9XeB7iMRZ9ufct8TDHKzz0Z9gP5oRJHvrHjgoTm4hN76XxLLWTYK/yLOJ4Um1JdA9lsx/uvYx7x5d4GnfMj/9izFoEnuWfWnuz9LnKQ+6TtFn/qBvkpiqu
   </data>
  </layer>
 </map>
