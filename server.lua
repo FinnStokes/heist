@@ -52,6 +52,13 @@ M.start = function ()
   sock:settimeout(0)
   sock:setsockname("*", LISTEN_PORT)
   timer = 0
+  
+  -- Spawn the server's avatar
+  local newPlayer = player.newLocal()
+  newPlayer.network = {}
+  linkEntity(newPlayer.id, nextEntityId)
+  players.entities[0] = nextEntityId
+  nextEntityId = nextEntityId + 1
 end
 
 --- Stop the server.
@@ -106,6 +113,8 @@ commands.fac = function (playerId, args)
     x,
     y
   )
+  
+  sendToAll(packet)
 end
 
 -- Acknowledge player connection
@@ -136,6 +145,7 @@ commands.hi = function (playerId, args)
   linkEntity(newPlayer.id, nextEntityId)
   players.entities[id] = nextEntityId
   nextEntityId = nextEntityId + 1
+  
   sendToAll(packet)
 end
 
@@ -158,6 +168,7 @@ commands.mov = function (playerId, args)
     y
   )
   
+  sendToAll(packet)
 end
 
 -- Send back our netTime to sync the client
