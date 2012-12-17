@@ -43,8 +43,8 @@ M.getTileProperties = function (pos)
   local tile_id = e.level.tiledata[pos.x][pos.y]
   local properties = {}
 
-  if e.level.tilesets[tilelayer].tiles[tile_id] then
-    for k,v in pairs(e.level.tilesets[tilelayer].tiles[tile_id]) do
+  if e.level.tilesets[1].tiles[tile_id] then
+    for k,v in pairs(e.level.tilesets[1].tiles[tile_id]) do
       local f = assert(loadstring("return " .. v))
       _,properties[k] = pcall(f)
     end

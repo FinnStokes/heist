@@ -1,5 +1,6 @@
 --- System for managigng player and guard actions
 
+local level = require("level")
 local sprite = require("sprite")
 local system = require("system")
 local timing = require("timing")
@@ -28,7 +29,11 @@ M.step = function (dt, ents)
           sprite.play(e, M.facing[e.facing.x][e.facing.y])
         end
         if e.location and e.position then
-          if timing.getTime() >= e.action.timestamp then
+          local tile = level.getTileProperties({x = e.location.x + e.action.delta.x, y = e.location.y + e.action.delta.y})
+          if tile.solid then
+            e.position = {x = e.location.x, y = e.location.y}
+            e.action = {type = "idle"}
+          elseif timing.getTime() >= e.action.timestamp then
             e.location = {x = e.location.x + e.action.delta.x, y = e.location.y + e.action.delta.y}
             e.position = {x = e.location.x, y = e.location.y}
             e.action = {type = "idle"}
