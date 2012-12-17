@@ -8,34 +8,34 @@ local sprite = require("sprite")
 
 local M = {}
 
-entity.addTemplate("player", function (player, args)
-  player.location = { --Logical integer position
+entity.addTemplate("player", function (self, args)
+  self.location = { --Logical integer position
     x = 0,
     y = 0,
   }
   if args.x and args.y then
-    player.location = {
+    self.location = {
       x = args.x,
       y = args.y,
     }
   else
     local spawner = entity.get("spawner")
     if spawner then
-      player.location = {
+      self.location = {
         x = spawner.location.x,
         y = spawner.location.y,
       }
     end
   end
 
-  player.character = args.character
-  player.position = { --Fractional measure of your current position
-    x = player.location.x,
-    y = player.location.y,
+  self.character = args.character
+  self.position = { --Fractional measure of your current position
+    x = self.location.x,
+    y = self.location.y,
   }
-  player.facing = args.facing or {x = 0, y = 1} --Unit vector of players facing direction
-  player.action = {type = "idle"}
-  sprite.new(player, {
+  self.facing = args.facing or {x = 0, y = 1} --Unit vector of players facing direction
+  self.action = {type = "idle"}
+  sprite.new(self, {
     image = resource.getImage("data/img/"..args.character),
     width = 16,
     height = 16,
@@ -73,10 +73,10 @@ entity.addTemplate("player", function (player, args)
         fps = 5,
       },
     },
-    playing = "idle_" .. action.facing[player.facing.x][player.facing.y],
+    playing = "idle_" .. action.facing[self.facing.x][self.facing.y],
   })
-  entity.group(player, "players")
-  return player
+  entity.group(self, "players")
+  return self
 end)
 
 entity.addTemplate("spawner", function (self, args)
@@ -85,7 +85,7 @@ entity.addTemplate("spawner", function (self, args)
     y = args.y or 0,
   }
   entity.tag(self, "spawner")
-  return player
+  return self
 end)
 
 event.subscribe("input", function (map)

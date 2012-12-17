@@ -9,6 +9,7 @@ SPEED = 200
 
 local entity = require("entity")
 local event = require("event")
+local guard = require("guard")
 local input = require("input")
 local level = require("level")
 local network = require("network")

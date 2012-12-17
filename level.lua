@@ -118,10 +118,18 @@ M.new = function (data)
     for _,object in ipairs(data.layers[objectGroup].objects) do
       object.properties.x = 1 + math.floor(object.x/data.tilewidth)
       object.properties.y = data.layers[tileLayer].height - math.floor(object.y/data.tilewidth)
+      if object.polygon then
+        object.properties.polygon = {}
+        for _,pos in ipairs(object.polygon) do
+          table.insert(object.properties.polygon, {x = math.floor(pos.x/data.tilewidth), y = -math.floor(pos.y/data.tilewidth)})
+        end
+      end
       object.properties.width = object.width
       object.properties.height = object.height
       local e = entity.build(object.type, object.properties)
-      entity.tag(e, object.name)
+      if object.name then
+        entity.tag(e, object.name)
+      end
       if object.properties.groups then
         local groups = object.properties.groups:split(",")
         for _,g in ipairs(groups) do
