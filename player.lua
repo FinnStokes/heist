@@ -10,9 +10,24 @@ local M = {}
 
 entity.addTemplate("player", function (player, args)
   player.location = { --Logical integer position
-    x = args.x or 0,
-    y = args.y or 0,
+    x = 0,
+    y = 0,
   }
+  if args.x and args.y then
+    player.location = {
+      x = args.x,
+      y = args.y,
+    }
+  else
+    local spawner = entity.get("spawner")
+    if spawner then
+      player.location = {
+        x = spawner.location.x,
+        y = spawner.location.y,
+      }
+    end
+  end
+
   player.position = { --Fractional measure of your current position
     x = player.location.x,
     y = player.location.y,
@@ -60,6 +75,15 @@ entity.addTemplate("player", function (player, args)
     playing = "idle_" .. action.facing[player.facing.x][player.facing.y],
   })
   entity.group(player, "players")
+  return player
+end)
+
+entity.addTemplate("spawner", function (self, args)
+  self.location = { --Logical integer position
+    x = args.x or 0,
+    y = args.y or 0,
+  }
+  entity.tag(self, "spawner")
   return player
 end)
 

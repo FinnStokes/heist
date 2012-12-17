@@ -16,7 +16,7 @@ local timing = require("timing")
 --Constants
 CANVAS_HEIGHT = 128
 CANVAS_WIDTH = 240
-IP = "192.168.0.6"
+IP = "127.0.0.1"
 PORT = "44000"
 SPEED = 200
 
@@ -109,6 +109,7 @@ love.keypressed = function (key)
       -- Server
       isServer = true
       system.remove(network)
+      entity.update(0)
       server.start()
     end
   end
