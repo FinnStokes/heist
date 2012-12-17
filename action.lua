@@ -18,13 +18,32 @@ M.facing[-1][0] = "left"
 
 system.add(M)
 
+M.queue = function (e, action)
+  if e.action and not e.actionQueue then
+    e.actionQueue = {}
+  end
+  
+  table.insert(e.actionQueue, action)
+end
+
 --- Update actions for entities that have them
 -- @param dt (number) Time delta in seconds.
 -- @param ents (table) A list of entities with sprites (ignored if no sprite).
 M.step = function (dt, ents)
   for _,e in ipairs(ents) do
     if e.action then
+      if e.actionQueue then
+        while e.actionQueue[1] and e.action.type == "idle" do
+          e.action = table.remove(e.actionQueue,1)
+        end
+      end
       if e.action.type == "moveTo" then
+        if not e.action.delta then
+          e.action.delta = {
+            x = e.action.location.x - e.location.x,
+            y = e.action.location.y - e.location.y,
+          }
+        end
         if e.facing then
           sprite.play(e, M.facing[e.facing.x][e.facing.y])
         end
@@ -67,12 +86,12 @@ M.step = function (dt, ents)
   end
 end
 
-M.newMove = function (delta, time)
+M.newMove = function (location, time)
   time = time or (timing.getTime() + 0.3)
   local newAction = {
     type = "moveTo",
     timestamp = time,
-    delta = {x = delta.x, y = delta.y},
+    location = {x = location.x, y = location.y},
     dt = time - timing.getTime(),
   }
   return newAction

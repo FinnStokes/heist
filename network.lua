@@ -38,8 +38,8 @@ local onNewAction = function (player)
       local packet = string.format(
         "mov %f %i %i",
         player.action.timestamp,
-        player.location.x + player.action.delta.x,
-        player.location.y + player.action.delta.y
+        player.action.location.x,
+        player.action.location.y
       )
       sock:send(packet)
     end
@@ -104,10 +104,10 @@ commands.trn = function (args)
   
   -- Update local entity
   local e = entity.get(net2local[netId])
-  e.action = action.newTurn({
+  action.queue(e, action.newTurn({
     x = x,
     y = y,
-  }, timestamp)
+  }, timestamp))
 end
 
 -- Server acknowledge
@@ -142,10 +142,10 @@ commands.mov = function (args)
   
   -- Update local entity
   local e = entity.get(net2local[netId])
-  e.action = action.newMove({
-    x = x - e.location.x,
-    y = y - e.location.y,
-  }, timestamp)
+  action.queue(e, action.newMove({
+    x = x,
+    y = y,
+  }, timestamp))
 end
 
 return M

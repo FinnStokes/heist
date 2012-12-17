@@ -64,8 +64,8 @@ local onNewAction = function (player)
         "mov %f %u %i %i",
         player.action.timestamp,
         netId,
-        player.location.x + player.action.delta.x,
-        player.location.y + player.action.delta.y
+        player.action.location.x,
+        player.action.location.y
       )
       sendToAll(packet)
     end
@@ -148,15 +148,15 @@ commands.trn = function (playerId, args)
 
   -- Update local entity position
   local e = entity.get(net2local[netId])
-  e.action = action.newTurn({x=x, y=y}, timestamp)
+  action.queue(e, action.newTurn({x=x, y=y}, timestamp))
 
   -- Notify other players
   local packet = string.format(
     "trn %f %u %i %i",
-    e.action.timestamp,
+    timestamp,
     netId,
-    e.action.facing.x,
-    e.action.facing.y
+    x,
+    y
   )
   
   sendToAll(packet, playerId)
@@ -204,18 +204,18 @@ commands.mov = function (playerId, args)
 
   -- Update local entity position
   local e = entity.get(net2local[netId])
-  e.action = action.newMove({
-    x = x - e.location.x,
-    y = y - e.location.y,
-  }, timestamp)
+  action.queue(e, action.newMove({
+    x = x,
+    y = y,
+  }, timestamp))
 
   -- Notify other players
   local packet = string.format(
     "mov %f %u %i %i",
-    e.action.timestamp,
+    timestamp,
     netId,
-    e.location.x + e.action.delta.x,
-    e.location.y + e.action.delta.y
+    x,
+    y
   )
   
   sendToAll(packet, playerId)
