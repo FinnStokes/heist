@@ -221,4 +221,8 @@ commands.stp = function (args)
   end
 end
 
+commands.win = function (args)
+  error("You're winner!")
+end
+
 return M

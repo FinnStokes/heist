@@ -104,6 +104,10 @@ local onStop = function (e)
   sendToAll(packet)
 end
 
+local onWin = function ()
+  sendToAll("win")
+end
+
 local M = {}
 
 --- Gets the server IP and port.
@@ -121,6 +125,7 @@ M.start = function ()
   
   event.subscribe("newAction", onNewAction)
   event.subscribe("stop", onStop)
+  event.subscribe("win", onWin)
   
   -- Spawn the server's avatar
   local newPlayer = entity.build("player", {character = characters[1]})
@@ -146,6 +151,8 @@ M.stop = function ()
   sock = nil
   
   event.unsubscribe("newAction", onNewAction)
+  event.unsubscribe("stop", onStop)
+  event.unsubscribe("win", onWin)
 end
 
 --- Update the server.
