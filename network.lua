@@ -152,10 +152,12 @@ commands.mov = function (args)
   
   -- Update local entity
   local e = entity.get(net2local[netId])
-  action.queue(e, action.newMove({
-    x = x,
-    y = y,
-  }, timestamp))
+  if e then
+    action.queue(e, action.newMove({
+      x = x,
+      y = y,
+    }, timestamp))
+  end
 end
 
 return M

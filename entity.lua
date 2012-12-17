@@ -65,7 +65,10 @@ end
 -- @param name (string) The group.
 -- @return (table) The list of entities.
 M.getGroup = function (name)
-  return entitiesByGroup[name]
+  if entitiesByGroup[name] then
+    return entitiesByGroup[name]
+  end
+  return {}
 end
 
 --- Add an entity to a group for easy access.
