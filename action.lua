@@ -4,6 +4,7 @@ local level = require("level")
 local sprite = require("sprite")
 local system = require("system")
 local timing = require("timing")
+local util = require("util")
 
 local M = {}
 
@@ -39,6 +40,8 @@ M.step = function (dt, ents)
       end
       if e.action.type == "attack" then
         if timing.getTime() < e.action.timestamp then
+          e.facing.x = math.sign(e.action.target.location.x - e.location.x)
+          e.facing.y = math.sign(e.action.target.location.y - e.location.y)
           sprite.play(e, "attack_" .. M.facing[e.facing.x][e.facing.y])
         else
           e.action.target.action = { type = "dead" }
