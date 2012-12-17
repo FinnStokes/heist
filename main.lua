@@ -14,19 +14,78 @@ local system = require("system")
 local timing = require("timing")
 
 --Constants
-IP = "127.0.0.1"
+CANVAS_HEIGHT = 128
+CANVAS_WIDTH = 240
+IP = "192.168.0.6"
 PORT = "44000"
 SPEED = 200
 
+local canvas
 local isServer
+local screen
 
 --- The draw callback for Love.
 love.draw = function ()
+  -- Draw to canvas without scaling
+  love.graphics.setCanvas(canvas)
+  love.graphics.clear()
+  love.graphics.setColor(255, 255, 255)
   system.draw()
+
+  -- Draw to screen with scaling
+  love.graphics.setCanvas()
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.draw(
+    canvas,
+    screen.x,
+    screen.y,
+    0,
+    screen.scale,
+    screen.scale
+  )
 end
 
 --- The initialisation for Love.
 love.load = function ()
+  -- Find the optimal screen scaling
+  local modes = love.graphics.getModes()
+  table.sort(modes, function (a, b)
+    return a.width * a.height < b.width * b.height
+  end)
+  local mode = modes[#modes]
+  local scale = 1
+  while CANVAS_WIDTH * (scale + 1) <= mode.width and
+    CANVAS_HEIGHT * (scale + 1) <= mode.height do
+    scale = scale + 1
+  end
+  
+  screen = {
+    x = 0, --math.floor((mode.width - (CANVAS_WIDTH * scale)) / 2),
+    y = 0, --math.floor((mode.height - (CANVAS_HEIGHT * scale)) / 2),
+    width = CANVAS_WIDTH * scale, --mode.width,
+    height = CANVAS_HEIGHT * scale, --mode.height,
+    scale = scale,
+    fullscreen = false, --true,
+  }
+  
+  -- Create the window
+  love.graphics.setMode(
+    screen.width,
+    screen.height,
+    screen.fullscreen
+  )
+  love.graphics.setBackgroundColor(0, 0, 0)
+  love.mouse.setVisible(false)
+  
+  -- Create the canvas
+  if not love.graphics.newCanvas then
+    -- Support love2d versions before 0.8
+    love.graphics.newCanvas = love.graphics.newFramebuffer
+    love.graphics.setCanvas = love.graphics.setRenderTarget
+  end
+  canvas = love.graphics.newCanvas(CANVAS_WIDTH, CANVAS_HEIGHT)
+  canvas:setFilter("nearest", "nearest")
+
   local map = resource.getScript("data/img/level")
   local lvl = level.new(map)
 end
