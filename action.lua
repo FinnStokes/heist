@@ -40,8 +40,11 @@ M.step = function (dt, ents)
       end
       if e.action.type == "attack" then
         if timing.getTime() < e.action.timestamp then
-          e.facing.x = math.sign(e.action.target.location.x - e.location.x)
-          e.facing.y = math.sign(e.action.target.location.y - e.location.y)
+          if e.action.target.location.x ~= e.location.x or
+              e.action.target.location.y ~= e.location.y then
+            e.facing.x = math.sign(e.action.target.location.x - e.location.x)
+            e.facing.y = math.sign(e.action.target.location.y - e.location.y)
+          end
           sprite.play(e, "attack_" .. M.facing[e.facing.x][e.facing.y])
         else
           e.action.target.action = { type = "dead" }
