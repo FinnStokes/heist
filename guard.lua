@@ -17,6 +17,9 @@ entity.addTemplate("guard", function (self, args)
     x = args.x or 0,
     y = args.y or 0,
   }
+  self.ai = { -- FSM with states: patrol, caution, alert, returning
+    state = "patrol"
+  }
   self.route = {} -- Polygonal path to follow
   if args.polygon then
     for _,pos in ipairs(args.polygon) do
@@ -93,76 +96,104 @@ local move = function (e, dir)
   end
 end
 
-local M = {}
-
-system.add(M)
-
----
-M.preStep = function (dt, entities)
-  local guards = entity.getGroup("guards")
-  local players = entity.getGroup("players")
-  if guards == nil or #guards == 0 or
-      players == nil or #players == 0 then
-    return
-  end
-  -- Check for collisions with guard's cones of vision
-  for _,g in ipairs(guards) do
-    g.spotting = false
-    for _,p in ipairs(players) do
-      local dx = p.location.x - g.location.x
-      local dy = p.location.y - g.location.y
-      
-      -- Convert to u,v cooardinates, which are facing-independent
-      local u = (dx * g.facing.x) + (dy * g.facing.y)
-      local v = (dy * g.facing.x) - (dx * g.facing.y)
-
-      if u >= 0 and u <= SIGHT_RANGE and
-          math.abs(v) <= u and math.abs(v) < SIGHT_RANGE then
-        -- They are in the cone, check occlusion
-        local occluded = false
-        for i = 1, u do
-          local j = (v / u) * i
-          local j1 = math.floor(j)
-          local j2 = math.ceil(j)
-          -- Check both inner and outer rasterized rays
-          for j = j1, j2 do
-            local x = (i * g.facing.x) - (j * g.facing.y) + g.location.x
-            local y = (i * g.facing.y) + (j * g.facing.x) + g.location.y
-            if level.getTileProperties{x=x,y=y}.opaque then
-              occluded = true
-              break
-            end
+local followRoute = function (dt, entities, e)
+  if e.route then
+    if e.action then
+      if e.action.type == "idle" and #e.route > 0 then
+        if e.route[e.route.next].x > e.location.x then
+          move(e, {x = 1, y = 0})
+        elseif e.route[e.route.next].x < e.location.x then
+          move(e, {x = -1, y = 0})
+        elseif e.route[e.route.next].y > e.location.y then
+          move(e, {x = 0, y = 1})
+        elseif e.route[e.route.next].y < e.location.y then
+          move(e, {x = 0, y = -1})
+        else
+          e.route.next = e.route.next + 1
+          if e.route.next > #e.route then
+            e.route.next = 1
           end
-        end
-        if not occluded then
-          -- The player has been spotted
-          g.spotting = true
         end
       end
     end
   end
 end
 
----
-M.step = function (dt, entities)
-  for _,e in ipairs(entities) do
-    if e.route then
-      if e.action then
-        if e.action.type == "idle" and #e.route > 0 then
-          if e.route[e.route.next].x > e.location.x then
-            move(e, {x = 1, y = 0})
-          elseif e.route[e.route.next].x < e.location.x then
-            move(e, {x = -1, y = 0})
-          elseif e.route[e.route.next].y > e.location.y then
-            move(e, {x = 0, y = 1})
-          elseif e.route[e.route.next].y < e.location.y then
-            move(e, {x = 0, y = -1})
-          else
-            e.route.next = e.route.next + 1
-            if e.route.next > #e.route then
-              e.route.next = 1
-            end
+local spot = function (dt, entities, e)
+  local players = entity.getGroup("players")
+  if players == nil or #players == 0 then
+    return false
+  end
+  -- Check for collisions with guard's cones of vision
+  for _,p in ipairs(players) do
+    local dx = p.location.x - e.location.x
+    local dy = p.location.y - e.location.y
+    
+    -- Convert to u,v cooardinates, which are facing-independent
+    local u = (dx * e.facing.x) + (dy * e.facing.y)
+    local v = (dy * e.facing.x) - (dx * e.facing.y)
+
+    if u >= 0 and u <= SIGHT_RANGE and
+        math.abs(v) <= u and math.abs(v) < SIGHT_RANGE then
+      -- They are in the cone, check occlusion
+      local occluded = false
+      for i = 1, u do
+        local j = (v / u) * i
+        local j1 = math.floor(j)
+        local j2 = math.ceil(j)
+        -- Check both inner and outer rasterized rays
+        for j = j1, j2 do
+          local x = (i * e.facing.x) - (j * e.facing.y) + e.location.x
+          local y = (i * e.facing.y) + (j * e.facing.x) + e.location.y
+          if level.getTileProperties{x=x,y=y}.opaque then
+            occluded = true
+            break
           end
+        end
+      end
+      if not occluded then
+        -- The player has been spotted
+        return true
+      end
+    end
+  end
+  
+  -- We didn't see any players
+  return false
+end
+
+local states = {
+  alert = function (dt, entities, e)
+  
+  end,
+  caution = function (dt, entities, e)
+    
+  end,
+  patrol = function (dt, entities, e)
+    local spotting, x, y = spot(dt, entities, e)
+    if spotting then
+      return "caution"
+    end
+    followRoute(dt, entities, e)
+  end,
+  returning = function (dt, entities, e)
+  
+  end,
+}
+
+local M = {}
+
+system.add(M)
+
+--- Updates the guards based on current AI state
+M.step = function (dt, entities)
+  local guards = entity.getGroup("guards")
+  if guards and #guards > 0 then
+    for _,e in ipairs(entities) do
+      if e.ai then
+        local newState = states[e.ai.state](dt, entities, e)
+        if newState then
+          e.ai.state = newState
         end
       end
     end
