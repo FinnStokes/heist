@@ -28,15 +28,15 @@ local new = function ()
         fps = 1,
       },
       idle_right = {
-        frames = {5},
+        frames = {33},
         fps = 1,
       },
       idle_left = {
-        frames = {9},
+        frames = {65},
         fps = 1,
       },
       idle_up = {
-        frames = {13},
+        frames = {97},
         fps = 1,
       },
       down = {
@@ -44,15 +44,15 @@ local new = function ()
         fps = 5,
       },
       right = {
-        frames = {4,5,6,7},
+        frames = {32,33,34,35},
         fps = 5,
       },
       left = {
-        frames = {8,9,10,11},
+        frames = {64,65,66,67},
         fps = 5,
       },
       up = {
-        frames = {12,13,14,15},
+        frames = {96,97,98,99},
         fps = 5,
       },
     },
