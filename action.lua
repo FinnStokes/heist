@@ -1,5 +1,6 @@
 --- System for managigng player and guard actions
 
+local event = require("event")
 local level = require("level")
 local sprite = require("sprite")
 local system = require("system")

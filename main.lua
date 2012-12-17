@@ -3,7 +3,7 @@
 --Constants
 CANVAS_HEIGHT = 128
 CANVAS_WIDTH = 240
-IP = "127.0.0.1"
+IP = "192.168.0.6"
 PORT = "44000"
 SPEED = 200
 
