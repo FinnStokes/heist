@@ -90,7 +90,8 @@ M.start = function ()
   event.subscribe("newAction", onNewAction)
   
   -- Spawn the server's avatar
-  local newPlayer = player.newLocal()
+  local newPlayer = entity.build("player", {character = "killer"})
+  entity.tag(newPlayer, "avatar")
   newPlayer.network = {}
   linkEntity(newPlayer.id, nextEntityId)
   players.entities[0] = nextEntityId
@@ -186,7 +187,7 @@ commands.hi = function (playerId, args)
   local packet = string.format("mk %u %u %s", nextEntityId, id, "player")
   sendToAll(packet)
   
-  local newPlayer = player.newRemote()
+  local newPlayer = entity.build("player", {character = "killer"})
   newPlayer.network = {}
   linkEntity(newPlayer.id, nextEntityId)
   players.entities[id] = nextEntityId

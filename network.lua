@@ -124,11 +124,9 @@ commands.mk = function (args)
   local netId, pid, type = unpack(args)
   netId = tonumber(netId)
   pid = tonumber(pid)
-  local newPlayer
+  local newPlayer = entity.build("player", {character = "killer"})
   if pid == playerId then
-    newPlayer = player.newLocal()
-  else
-    newPlayer = player.newRemote()
+    entity.tag(newPlayer, "avatar")
   end
   linkEntity(newPlayer.id, netId)
 end

@@ -8,18 +8,19 @@ local sprite = require("sprite")
 
 local M = {}
 
-local new = function ()
-  local player = entity.new()
-  player.location = {x = 0, y = 0} --Logical integer position
+entity.addTemplate("player", function (player, args)
+  player.location = { --Logical integer position
+    x = args.x or 0,
+    y = args.y or 0,
+  }
   player.position = { --Fractional measure of your current position
     x = player.location.x,
     y = player.location.y,
   }
-  player.facing = {x = 0, y = 1} --Unit vector of players facing direction
-  player.velocity = {x = 0, y = 0} --Is this still necessary?
+  player.facing = args.facing or {x = 0, y = 1} --Unit vector of players facing direction
   player.action = {type = "idle"}
   sprite.new(player, {
-    image = resource.getImage("data/img/killer"),
+    image = resource.getImage("data/img/"..args.character),
     width = 16,
     height = 16,
     animations = {
@@ -60,19 +61,7 @@ local new = function ()
   })
   entity.group(player, "players")
   return player
-end
-
-M.newLocal = function ()
-  local player = new()
-  player.network = {}
-  entity.tag(player, "avatar")
-  return player
-end
-
-M.newRemote = function ()
-  local player = new()
-  return player
-end
+end)
 
 event.subscribe("input", function (map)
   local player = entity.get("avatar")
