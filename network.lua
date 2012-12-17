@@ -26,23 +26,23 @@ end
 
 local onNewAction = function (player)
   if player.action then
-    local packet
     if player.action.type == "turnTo" then
-      packet = string.format(
+      local packet = string.format(
         "trn %f %i %i",
         player.action.timestamp,
         player.action.facing.x,
         player.action.facing.y
       )
+      sock:send(packet)
     elseif player.action.type == "moveTo" then
-      packet = string.format(
+      local packet = string.format(
         "mov %f %i %i",
         player.action.timestamp,
         player.location.x + player.action.delta.x,
         player.location.y + player.action.delta.y
       )
+      sock:send(packet)
     end
-    sock:send(packet)
   end
 end
 
@@ -117,6 +117,7 @@ commands.ok = function (args)
   timing.setOffset(netTime - timing.getTime())
   timing.update()
   playerId = tonumber(args[2])
+  print("connected", playerId)
 end
 
 -- Make a new networked entity

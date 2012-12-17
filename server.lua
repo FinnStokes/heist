@@ -50,25 +50,25 @@ end
 local onNewAction = function (player)
   if player.action then
     local netId = local2net[player.id]
-    local packet
     if player.action.type == "turnTo" then
-      packet = string.format(
+      local packet = string.format(
         "trn %f %u %i %i",
         player.action.timestamp,
         netId,
         player.action.facing.x,
         player.action.facing.y
       )
+      sendToAll(packet)
     elseif player.action.type == "moveTo" then
-      packet = string.format(
+      local packet = string.format(
         "mov %f %u %i %i",
         player.action.timestamp,
         netId,
         player.location.x + player.action.delta.x,
         player.location.y + player.action.delta.y
       )
+      sendToAll(packet)
     end
-    sendToAll(packet)
   end
 end
 
