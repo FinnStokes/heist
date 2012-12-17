@@ -48,4 +48,7 @@
    eJzNk0sOwCAIRNXaA2g9kfc/VF1oQiZQUJu0i0kIgcdPq3OufqCj6WIUF3mh6WQUJurHDR4XHwi7dJ9XeB7iMRZ9ufct8TDHKzz0Z9gP5oRJHvrHjgoTm4hN76XxLLWTYK/yLOJ4Um1JdA9lsx/uvYx7x5d4GnfMj/9izFoEnuWfWnuz9LnKQ+6TtFn/qBvkpiqu
   </data>
  </layer>
+ <objectgroup name="Object Layer 1" width="20" height="20">
+  <object x="256" y="128" width="16" height="16"/>
+ </objectgroup>
 </map>
