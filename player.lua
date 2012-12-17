@@ -73,6 +73,22 @@ entity.addTemplate("player", function (self, args)
         frames = {96,97,98,99},
         fps = 5,
       },
+      dead_down = {
+        frames = {4},
+        fps = 1,
+      },
+      dead_right = {
+        frames = {36},
+        fps = 1,
+      },
+      dead_left = {
+        frames = {68},
+        fps = 1,
+      },
+      dead_up = {
+        frames = {100},
+        fps = 1,
+      },
     },
     playing = "idle_" .. action.facing[self.facing.x][self.facing.y],
   })

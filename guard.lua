@@ -106,7 +106,7 @@ local move = function (e, dir)
       y = dir.y,
     })
   else
-    e.action = action.newMove({
+    e.action = action.newGuardMove({
       x = e.location.x + dir.x,
       y = e.location.y + dir.y,
     })

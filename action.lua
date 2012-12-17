@@ -41,6 +41,7 @@ M.step = function (dt, ents)
         if timing.getTime() < e.action.timestamp then
           sprite.play(e, "attack_" .. M.facing[e.facing.x][e.facing.y])
         else
+          e.action.target.action = { type = "dead" }
           e.action = { type = "idle" }
         end
       elseif e.action.type == "moveTo" then
@@ -84,6 +85,8 @@ M.step = function (dt, ents)
         end
       elseif e.action.type == "idle" then
         sprite.play(e, "idle_" .. M.facing[e.facing.x][e.facing.y])
+      elseif e.action.type == "dead" then
+        sprite.play(e, "dead_" .. M.facing[e.facing.x][e.facing.y])
       else
         error("Undefined action " .. e.action.type)
         e.action = {type = "idle"}
@@ -98,6 +101,17 @@ M.newAttack = function (target, time)
     type = "attack",
     timestamp = time,
     target = target,
+  }
+  return newAction
+end
+
+M.newGuardMove = function (location, time)
+  time = time or (timing.getTime() + 0.6)
+  local newAction = {
+    type = "moveTo",
+    timestamp = time,
+    location = {x = location.x, y = location.y},
+    dt = time - timing.getTime(),
   }
   return newAction
 end
