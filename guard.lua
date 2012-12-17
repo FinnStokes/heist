@@ -13,6 +13,8 @@ local SIGHT_RANGE = 4
 
 local M = {}
 
+system.add(M)
+
 entity.addTemplate("guard", function (self, args)
   self.location = { --Logical integer position
     x = args.x or 0,
@@ -241,10 +243,6 @@ local states = {
     end
   end,
 }
-
-local M = {}
-
-system.add(M)
 
 --- Updates the guards based on current AI state
 M.step = function (dt, entities)

@@ -10,24 +10,22 @@ system.add(M)
 
 --- Draw a sprite from the given list of entities
 -- @param ents (table) A list of entities with sprites (ignored if no sprite).
-M.draw = function (ents)
-  for _,e in ipairs(ents) do
-    if e.sprite and e.position then
-      local pos = camera.worldToScreen(e.position)
-      if e.sprite.image then
-        if not e.sprite.hidden then
-          love.graphics.drawq(
-            e.sprite.image, e.sprite.quad,
-            pos.x, pos.y,
-            0, 1, 1,
-            e.sprite.originX, e.sprite.originY)
-        end
-      else
-        love.graphics.circle("fill", pos.x, pos.y, e.sprite.r*math.abs(camera.xScale),30)
-        if e.facing then
-          local pos2 = camera.worldToScreen({x = e.position.x + e.facing.x, y = e.position.y + e.facing.y})
-          love.graphics.line(pos.x, pos.y, pos2.x, pos2.y)
-        end
+M.draw = function (e)
+  if e.sprite and e.position then
+    local pos = camera.worldToScreen(e.position)
+    if e.sprite.image then
+      if not e.sprite.hidden then
+        love.graphics.drawq(
+          e.sprite.image, e.sprite.quad,
+          pos.x, pos.y,
+          0, 1, 1,
+          e.sprite.originX, e.sprite.originY)
+      end
+    else
+      love.graphics.circle("fill", pos.x, pos.y, e.sprite.r*math.abs(camera.xScale),30)
+      if e.facing then
+        local pos2 = camera.worldToScreen({x = e.position.x + e.facing.x, y = e.position.y + e.facing.y})
+        love.graphics.line(pos.x, pos.y, pos2.x, pos2.y)
       end
     end
   end

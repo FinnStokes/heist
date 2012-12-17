@@ -15,10 +15,12 @@ end
 --- Draws all the systems contained
 M.draw = function ()
   local ents = entity.all()
-
-  for _,s in ipairs(systems) do
-    if s.draw then
-      s.draw(ents)
+  
+  for _,e in ipairs(ents) do
+    for _,s in ipairs(systems) do
+      if s.draw then
+        s.draw(e)
+      end
     end
   end
 end

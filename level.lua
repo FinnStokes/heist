@@ -26,19 +26,17 @@ end
 
 --- The draw function for levels
 -- @param ents (table) A list of entities to draw (if it has a level)
-M.draw = function (ents)
-  for _,e in ipairs(ents) do
-    if e.level then
-      for x = 1, e.level.width do
-        for y = 1, e.level.height do
-          local tile_id = e.level.tiledata[x][y]
-          local quad = e.level.tileset.quads[tile_id]
-          local pos = camera.worldToScreen({x = x, y = y})
+M.draw = function (e)
+  if e.level then
+    for x = 1, e.level.width do
+      for y = 1, e.level.height do
+        local tile_id = e.level.tiledata[x][y]
+        local quad = e.level.tileset.quads[tile_id]
+        local pos = camera.worldToScreen({x = x, y = y})
 
-          love.graphics.drawq(
-            e.level.tileset.image,
-            quad, pos.x, pos.y)
-        end
+        love.graphics.drawq(
+          e.level.tileset.image,
+          quad, pos.x, pos.y)
       end
     end
   end

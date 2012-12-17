@@ -19,6 +19,15 @@ return { version = "1.1", luaversion = "5.1", orientation = "orthogonal", width 
             { x = 0, y = 80 }
           },
           properties = {}
+        },
+        {
+          name = "",
+          type = "goal",
+          x = 32,
+          y = 96,
+          width = 16,
+          height = 16,
+          properties = {}
         }
       }
     }
