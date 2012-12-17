@@ -67,7 +67,7 @@ local onNewAction = function (e)
     elseif e.action.type == "dead" then
       local packet = string.format(
         "ded %f %u",
-        e.action.timestamp,
+        0,
         netId
       )
       sendToAll(packet)

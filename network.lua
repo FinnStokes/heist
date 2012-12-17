@@ -129,10 +129,12 @@ commands.trn = function (args)
   
   -- Update local entity
   local e = entity.get(net2local[netId])
-  action.queue(e, action.newTurn({
-    x = x,
-    y = y,
-  }, timestamp))
+  if e ~= nil then
+    action.queue(e, action.newTurn({
+      x = x,
+      y = y,
+    }, timestamp))
+  end
 end
 
 -- Server acknowledge
@@ -196,11 +198,13 @@ commands.mov = function (args)
   
   -- Update local entity
   local e = entity.get(net2local[netId])
-  if e then
-    action.queue(e, action.newMove({
-      x = x,
-      y = y,
-    }, timestamp))
+  if e ~= nil then
+    if e then
+      action.queue(e, action.newMove({
+        x = x,
+        y = y,
+      }, timestamp))
+    end
   end
 end
 
