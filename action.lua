@@ -37,7 +37,13 @@ M.step = function (dt, ents)
           e.action = table.remove(e.actionQueue,1)
         end
       end
-      if e.action.type == "moveTo" then
+      if e.action.type == "attack" then
+        if timing.getTime() < e.action.timestamp then
+          sprite.play(e, "attack_" .. M.facing[e.facing.x][e.facing.y])
+        else
+          e.action = { type = "idle" }
+        end
+      elseif e.action.type == "moveTo" then
         if not e.action.delta then
           e.action.delta = {
             x = e.action.location.x - e.location.x,
@@ -84,6 +90,16 @@ M.step = function (dt, ents)
       end
     end
   end
+end
+
+M.newAttack = function (target, time)
+  time = time or (timing.getTime() + 0.8)
+  local newAction = {
+    type = "attack",
+    timestamp = time,
+    target = target,
+  }
+  return newAction
 end
 
 M.newMove = function (location, time)

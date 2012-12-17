@@ -1,6 +1,8 @@
 -- path.lua
 -- A* pathfinding algorithm
 
+local level = require("level")
+
 M = {}
 
 local heuristic = function(src, dst)
@@ -23,7 +25,7 @@ local directions = function (from, last)
       x = from.x - 1,
       y = from.y,
     }
-  elseif last.x < from.x
+  elseif last.x < from.x then
     return {
       x = from.x,
       y = from.y - 1,
@@ -56,10 +58,10 @@ M.get = function (src, dst)
       spt[node.x][node.y] = sf[node.x][node.y]
     end
     
-    if node.x == dst.x and node.y = dst.y then
+    if node.x == dst.x and node.y == dst.y then
       local path = {dst}
-      while path[1].x ~= src.x or path[1].y ~= src.y do
-        table.insert(path, 1, spt[path[1].x][path[1].y])
+      while path[#path].x ~= src.x or path[#path].y ~= src.y do
+        table.insert(path, spt[path[#path].x][path[#path].y])
       end
       path.cost = costs[dst.x][dst.y]
       return path

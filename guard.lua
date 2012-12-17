@@ -4,6 +4,7 @@ local action = require("action")
 local entity = require("entity")
 local event = require("event")
 local level = require("level")
+local path = require("path")
 local resource = require("resource")
 local sprite = require("sprite")
 local system = require("system")
@@ -75,6 +76,22 @@ entity.addTemplate("guard", function (self, args)
         frames = {48,49,50,51},
         fps = 5,
       },
+      attack_down = {
+        frames = {4,5,6,7},
+        fps = 5,
+      },
+      attack_right = {
+        frames = {20,21,22,23},
+        fps = 5,
+      },
+      attack_left = {
+        frames = {36,37,38,39},
+        fps = 5,
+      },
+      attack_up = {
+        frames = {52,53,54,55},
+        fps = 5,
+      },
     },
     playing = "idle_" .. action.facing[self.facing.x][self.facing.y],
   })
@@ -96,24 +113,30 @@ local move = function (e, dir)
   end
 end
 
+local goto = function (e, pos)
+  if e.action and e.action.type == "idle" then
+    if pos.x > e.location.x then
+      move(e, {x = 1, y = 0})
+    elseif pos.x < e.location.x then
+      move(e, {x = -1, y = 0})
+    elseif pos.y > e.location.y then
+      move(e, {x = 0, y = 1})
+    elseif pos.y < e.location.y then
+      move(e, {x = 0, y = -1})
+    else
+      return true
+    end
+  end
+  return false
+end
+
 local followRoute = function (dt, entities, e)
-  if e.route then
-    if e.action then
-      if e.action.type == "idle" and #e.route > 0 then
-        if e.route[e.route.next].x > e.location.x then
-          move(e, {x = 1, y = 0})
-        elseif e.route[e.route.next].x < e.location.x then
-          move(e, {x = -1, y = 0})
-        elseif e.route[e.route.next].y > e.location.y then
-          move(e, {x = 0, y = 1})
-        elseif e.route[e.route.next].y < e.location.y then
-          move(e, {x = 0, y = -1})
-        else
-          e.route.next = e.route.next + 1
-          if e.route.next > #e.route then
-            e.route.next = 1
-          end
-        end
+  if e.route and #e.route > 0 then
+    while goto(e, e.route[e.route.next]) do
+      -- finished
+      e.route.next = e.route.next + 1
+      if e.route.next > #e.route then
+        e.route.next = 1
       end
     end
   end
@@ -153,7 +176,7 @@ local spot = function (dt, entities, e)
       end
       if not occluded then
         -- The player has been spotted
-        return true
+        return true, p
       end
     end
   end
@@ -164,20 +187,65 @@ end
 
 local states = {
   alert = function (dt, entities, e)
-  
+    if e.ai.target.active then
+      e.ai.target.active = false
+    end
+    if not e.ai.path or #e.ai.path <= 1 then
+      e.ai.path = path.get(e.location, e.ai.target.location)
+      table.remove(e.ai.path)
+    end
+    if e.ai.path and #e.ai.path > 1 then
+      while #e.ai.path > 1 and goto(e, e.ai.path[#e.ai.path]) do
+        table.remove(e.ai.path)
+      end
+    else
+      if e.action.type == "idle" then
+        e.action = action.newAttack(e.ai.target)
+        e.ai.path = nil
+        return "returning"
+      end
+    end
   end,
   caution = function (dt, entities, e)
-    
+    if e.ai.path and #e.ai.path > 0 then
+      while #e.ai.path > 0 and goto(e, e.ai.path[#e.ai.path]) do
+        table.remove(e.ai.path)
+      end
+    else
+      e.ai.path = nil
+      return "alert"
+    end
   end,
   patrol = function (dt, entities, e)
-    local spotting, x, y = spot(dt, entities, e)
-    if spotting then
+    local spotting, target = spot(dt, entities, e)
+    if spotting and target.active then
+      e.ai.target = target
+      e.ai.path = path.get(e.location, target.location)
       return "caution"
     end
     followRoute(dt, entities, e)
   end,
   returning = function (dt, entities, e)
-  
+    if not e.ai.path then
+      local minPath, minCost
+      for i,pos in ipairs(e.route) do
+        local p = path.get(e.location, pos)
+        if not minCost or p.cost < minCost then
+          minPath = p
+          minCost = p.cost
+          e.route.next = i
+        end
+      end
+      e.ai.path = minPath
+    end
+    if #e.ai.path > 0 then
+      while #e.ai.path > 0 and goto(e, e.ai.path[#e.ai.path]) do
+        table.remove(e.ai.path)
+      end
+    else
+      e.ai.path = nil
+      return "patrol"
+    end
   end,
 }
 

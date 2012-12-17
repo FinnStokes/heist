@@ -28,6 +28,7 @@ entity.addTemplate("player", function (self, args)
     end
   end
 
+  self.active = true
   self.character = args.character
   self.position = { --Fractional measure of your current position
     x = self.location.x,
@@ -90,7 +91,7 @@ end)
 
 event.subscribe("input", function (map)
   local player = entity.get("avatar")
-  if player and player.position then
+  if player and player.position and player.active then
     if map.ranges.move and player.action and player.action.type == "idle" then
       if map.ranges.move.x ~= 0 or map.ranges.move.y ~= 0 then
         if map.ranges.move.x == player.facing.x and
