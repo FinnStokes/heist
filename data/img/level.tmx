@@ -4,54 +4,62 @@
   <image source="tileset.png" width="256" height="256"/>
   <tile id="0">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
   <tile id="1">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
   <tile id="2">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
   <tile id="3">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
   <tile id="16">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
   <tile id="17">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
   <tile id="18">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
   <tile id="19">
    <properties>
+    <property name="opaque" value="true"/>
     <property name="solid" value="true"/>
    </properties>
   </tile>
  </tileset>
  <layer name="Tile Layer 1" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJzNk0sOwCAIRNXaA2g9kfc/VF1oQiZQUJu0i0kIgcdPq3OufqCj6WIUF3mh6WQUJurHDR4XHwi7dJ9XeB7iMRZ9ufct8TDHKzz0Z9gP5oRJHvrHjgoTm4hN76XxLLWTYK/yLOJ4Um1JdA9lsx/uvYx7x5d4GnfMj/9izFoEnuWfWnuz9LnKQ+6TtFn/qBvkpiqu
+   eJzNlEsOwCAIRBXtAbSeyPsfql1oQiaMn3bRLiYxBJ6AYHXO1Q8Ubp2G4kOe3DoMycb98QXP8hfFLs3mJzwP/uiLttzyZjyM8RMe2jP0B2Nkk4f23qNi+CZ11u/VfTL0SYy72N2JnK38GI/FMVm8XYbuQxnUt5OTnpf+3pH44/yu7gfjpgE3tBqf7j3OCMttJU+236v/k94jplmtf9QFiR0q7g==
   </data>
  </layer>
  <objectgroup name="Object Layer 1" width="20" height="20">
   <object type="spawner" x="32" y="176" width="16" height="16"/>
-  <object type="guard" x="144" y="160">
-   <polygon points="0,0 0,-48 48,-48 48,-64 32,-64 32,-112 64,-112 64,-96 80,-96 80,0"/>
+  <object name="speccyGit" type="guard" x="144" y="160">
+   <polygon points="0,0 0,-48 48,-48 48,-64 32,-64 32,-112 64,-112 64,-96 80,-96 80,-48 144,-48 144,0 80,0 80,64 48,64 48,32 -32,32 -32,80 0,80"/>
   </object>
  </objectgroup>
 </map>

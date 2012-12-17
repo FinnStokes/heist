@@ -3,9 +3,12 @@
 local action = require("action")
 local entity = require("entity")
 local event = require("event")
+local level = require("level")
 local resource = require("resource")
 local sprite = require("sprite")
 local system = require("system")
+
+local SIGHT_RANGE = 4
 
 local M = {}
 
@@ -94,6 +97,53 @@ local M = {}
 
 system.add(M)
 
+---
+M.preStep = function (dt, entities)
+  local guards = entity.getGroup("guards")
+  local players = entity.getGroup("players")
+  if guards == nil or #guards == 0 or
+      players == nil or #players == 0 then
+    return
+  end
+  -- Check for collisions with guard's cones of vision
+  for _,g in ipairs(guards) do
+    g.spotting = false
+    for _,p in ipairs(players) do
+      local dx = p.location.x - g.location.x
+      local dy = p.location.y - g.location.y
+      
+      -- Convert to u,v cooardinates, which are facing-independent
+      local u = (dx * g.facing.x) + (dy * g.facing.y)
+      local v = (dy * g.facing.x) - (dx * g.facing.y)
+
+      if u >= 0 and u <= SIGHT_RANGE and
+          math.abs(v) <= u and math.abs(v) < SIGHT_RANGE then
+        -- They are in the cone, check occlusion
+        local occluded = false
+        for i = 1, u do
+          local j = (v / u) * i
+          local j1 = math.floor(j)
+          local j2 = math.ceil(j)
+          -- Check both inner and outer rasterized rays
+          for j = j1, j2 do
+            local x = (i * g.facing.x) - (j * g.facing.y) + g.location.x
+            local y = (i * g.facing.y) + (j * g.facing.x) + g.location.y
+            if level.getTileProperties{x=x,y=y}.opaque then
+              occluded = true
+              break
+            end
+          end
+        end
+        if not occluded then
+          -- The player has been spotted
+          g.spotting = true
+        end
+      end
+    end
+  end
+end
+
+---
 M.step = function (dt, entities)
   for _,e in ipairs(entities) do
     if e.route then

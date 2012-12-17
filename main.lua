@@ -3,7 +3,7 @@
 --Constants
 CANVAS_HEIGHT = 128
 CANVAS_WIDTH = 240
-IP = "127.0.0.1"
+IP = "192.168.0.6"
 PORT = "44000"
 SPEED = 200
 
@@ -44,6 +44,13 @@ love.draw = function ()
     screen.scale,
     screen.scale
   )
+  
+  -- debug
+  local g = entity.get("speccyGit")
+  if g then
+    local seen = g.spotting
+    love.graphics.print("Seen: " .. tostring(seen), 0, 0)
+  end
 end
 
 --- The initialisation for Love.
