@@ -28,7 +28,7 @@ end
 --- Update the camera position to follow the player.
 -- @param dt (number) Time delta in seconds.
 -- @param entities (table) The entity list.
-M.step = function (dt, entities)
+M.postStep = function (dt, entities)
   local avatar = entity.get("avatar")
   if avatar and avatar.location then
     M.x = math.floor((avatar.position.x + xOffset)*16)/16
@@ -41,8 +41,8 @@ end
 -- @return (table) The corresponding screen coords
 M.worldToScreen = function (pos)
   return {
-    x = (pos.x - M.x)*M.xScale,
-    y = (pos.y - M.y)*M.yScale,
+    x = math.floor((pos.x - M.x)*M.xScale),
+    y = math.floor((pos.y - M.y)*M.yScale),
   }
 end
 

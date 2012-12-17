@@ -1,5 +1,12 @@
 --- The main file for Heist
 
+--Constants
+CANVAS_HEIGHT = 128
+CANVAS_WIDTH = 240
+IP = "192.168.0.11"
+PORT = "44000"
+SPEED = 200
+
 local entity = require("entity")
 local event = require("event")
 local input = require("input")
@@ -12,13 +19,6 @@ local server = require("server")
 local sprite = require("sprite")
 local system = require("system")
 local timing = require("timing")
-
---Constants
-CANVAS_HEIGHT = 128
-CANVAS_WIDTH = 240
-IP = "127.0.0.1"
-PORT = "44000"
-SPEED = 200
 
 local canvas
 local isServer
@@ -60,19 +60,21 @@ love.load = function ()
   end
   
   screen = {
-    x = 0, --math.floor((mode.width - (CANVAS_WIDTH * scale)) / 2),
-    y = 0, --math.floor((mode.height - (CANVAS_HEIGHT * scale)) / 2),
-    width = CANVAS_WIDTH * scale, --mode.width,
-    height = CANVAS_HEIGHT * scale, --mode.height,
+    x = math.floor((mode.width - (CANVAS_WIDTH * scale)) / 2),
+    y = math.floor((mode.height - (CANVAS_HEIGHT * scale)) / 2),
+    width = mode.width,
+    height = mode.height,
     scale = scale,
-    fullscreen = false, --true,
+    fullscreen = true,
+    vsync = true,
   }
   
   -- Create the window
   love.graphics.setMode(
     screen.width,
     screen.height,
-    screen.fullscreen
+    screen.fullscreen,
+    screen.vsync
   )
   love.graphics.setBackgroundColor(0, 0, 0)
   love.mouse.setVisible(false)
