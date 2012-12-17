@@ -115,9 +115,7 @@ commands.ok = function (args)
   latency = (socket.gettime() - timeOfLastPacket)
   local netTime = tonumber(args[1]) + (latency / 2)
   timing.setOffset(netTime - timing.getTime())
-  print(tonumber(args[1]), latency, netTime, timing.getTime())
   timing.update()
-  print(timing.getTime())
   playerId = tonumber(args[2])
 end
 
