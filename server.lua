@@ -98,6 +98,7 @@ M.start = function ()
   -- Spawn the server's avatar
   local newPlayer = entity.build("player", {character = characters[1]})
   entity.tag(newPlayer, "avatar")
+  entity.depth = -1
   newPlayer.network = {}
   linkEntity(newPlayer.id, nextEntityId)
   players.entities[0] = nextEntityId

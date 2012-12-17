@@ -137,6 +137,7 @@ commands.mk = function (args)
   })
   if pid == playerId then
     entity.tag(newPlayer, "avatar")
+    entity.depth = -1
   end
   linkEntity(newPlayer.id, netId)
 end
