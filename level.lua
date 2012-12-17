@@ -4,10 +4,25 @@ local camera = require("camera")
 local entity = require("entity")
 local event = require("event")
 local system = require("system")
+local util = require("util")
 
 local M = {}
 
 system.add(M)
+
+local parseProperty = function (val)
+  if val == "true" then
+    return true
+  end
+  if val == "false" then
+    return false
+  end
+  local num = tonumber(val)
+  if num ~= nil then
+    return num
+  end
+  return val
+end
 
 --- The draw function for levels
 -- @param ents (table) A list of entities to draw (if it has a level)
@@ -45,8 +60,7 @@ M.getTileProperties = function (pos)
 
   if e.level.tilesets[1].tiles[tile_id] then
     for k,v in pairs(e.level.tilesets[1].tiles[tile_id]) do
-      local f = assert(loadstring("return " .. v))
-      _,properties[k] = pcall(f)
+      properties[k] = v
     end
   end
 
@@ -70,14 +84,19 @@ M.new = function (data)
     end
   end
 
-  e.level.properties = data.properties
+  for k, v in pairs(data.properties) do
+    e.level.properties = parseProperty(v)
+  end
 
   -- tileset properties
   for _,tileset in ipairs(data.tilesets) do
     local tiles = {}
 
     for _,tile in ipairs(tileset.tiles) do
-      tiles[tile.id + 1] = tile.properties
+      tiles[tile.id + 1] = {}
+      for k,v in pairs(tile.properties) do
+        tiles[tile.id + 1][k] = parseProperty(v)
+      end
     end
 
     tileset.tiles = tiles
@@ -95,15 +114,26 @@ M.new = function (data)
     end
   end
   
-  -- for _,object in ipairs(data.layers[objectgroup].objects) do
-  --   local position = { x = object.x, y = object.y }
-  --   object.position = position
-  --   entity.new(object)
-  -- end
+  if objectGroup then
+    for _,object in ipairs(data.layers[objectGroup].objects) do
+      object.properties.x = 1 + math.floor(object.x/data.tilewidth)
+      object.properties.y = data.layers[tileLayer].height - math.floor(object.y/data.tilewidth)
+      object.properties.width = object.width
+      object.properties.height = object.height
+      local e = entity.build(object.type, object.properties)
+      entity.tag(e, object.name)
+      if object.properties.groups then
+        local groups = object.properties.groups:split(",")
+        for _,g in ipairs(groups) do
+          object.group(e,g:trim())
+        end
+      end
+    end
+  end
   
   -- render info
   e.level.tileset = {}
-  e.level.tileset.image = love.graphics.newImage("data/img/"..data.tilesets[1].image) --may need prefix
+  e.level.tileset.image = love.graphics.newImage("data/img/"..data.tilesets[1].image)
   e.level.tileset.quads = {}
   local max_tiles = data.tilesets[1].tilewidth * data.tilesets[1].tileheight
   local tiles_x = data.tilesets[1].imagewidth / data.tilesets[1].tilewidth
