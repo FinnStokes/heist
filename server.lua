@@ -8,6 +8,12 @@ local socket = require("socket")
 local timing = require("timing")
 local util = require("util")
 
+local characters = {
+  "demo",
+  "hacker",
+  "killer",
+  "scout"
+}
 local commands = {}
 local local2net = {}
 local msg_or_ip, port_or_nil
@@ -90,7 +96,7 @@ M.start = function ()
   event.subscribe("newAction", onNewAction)
   
   -- Spawn the server's avatar
-  local newPlayer = entity.build("player", {character = "killer"})
+  local newPlayer = entity.build("player", {character = characters[1]})
   entity.tag(newPlayer, "avatar")
   newPlayer.network = {}
   linkEntity(newPlayer.id, nextEntityId)
@@ -138,30 +144,6 @@ M.update = function (dt)
   end
 end
 
--- Updates an entities facing
-commands.trn = function (playerId, args)
-  local netId = players.entities[playerId]
-  local timestamp, x, y = unpack(args)
-  timestamp = tonumber(timestamp)
-  x = tonumber(x)
-  y = tonumber(y)
-
-  -- Update local entity position
-  local e = entity.get(net2local[netId])
-  action.queue(e, action.newTurn({x=x, y=y}, timestamp))
-
-  -- Notify other players
-  local packet = string.format(
-    "trn %f %u %i %i",
-    timestamp,
-    netId,
-    x,
-    y
-  )
-  
-  sendToAll(packet, playerId)
-end
-
 -- Acknowledge player connection
 commands.hi = function (playerId, args)
   -- A new player is connecting
@@ -172,22 +154,41 @@ commands.hi = function (playerId, args)
     port = port_or_nil,
   }
   linkPlayer(id, address)
-  
+
+  -- Determine character (first is taken by server)
+  local character = characters[id + 1]
+
   -- Tell the player they are connected
   local packet = string.format("ok %f %u", timing.getTime(), id)
   sock:sendto(packet, msg_or_ip, port_or_nil)
   
   -- Spawn existing players on the new client
   for pid, netId in pairs(players.entities) do
-    local packet = string.format("mk %u %u %s", netId, pid, "player")
+    local e = entity.get(net2local[netId])
+    local packet = string.format(
+      "mk %u %u %s %s %i %i %i %i",
+      netId,
+      pid,
+      "player",
+      e.character,
+      e.location.x,
+      e.location.y,
+      e.facing.x,
+      e.facing.y
+    )
     sock:sendto(packet, msg_or_ip, port_or_nil)
   end
   
   -- Spawn the new player's avatar on each client
-  local packet = string.format("mk %u %u %s", nextEntityId, id, "player")
+  local packet = string.format("mk %u %u %s %s",
+    nextEntityId,
+    id,
+    "player",
+    character
+  )
   sendToAll(packet)
   
-  local newPlayer = entity.build("player", {character = "killer"})
+  local newPlayer = entity.build("player", {character = character})
   newPlayer.network = {}
   linkEntity(newPlayer.id, nextEntityId)
   players.entities[id] = nextEntityId
@@ -225,6 +226,31 @@ end
 commands.png = function (playerId, args)
   local packet = string.format("png %u", timing.getTime())
   sendTo(packet, playerId)
+end
+
+
+-- Updates an entities facing
+commands.trn = function (playerId, args)
+  local netId = players.entities[playerId]
+  local timestamp, x, y = unpack(args)
+  timestamp = tonumber(timestamp)
+  x = tonumber(x)
+  y = tonumber(y)
+
+  -- Update local entity position
+  local e = entity.get(net2local[netId])
+  action.queue(e, action.newTurn({x=x, y=y}, timestamp))
+
+  -- Notify other players
+  local packet = string.format(
+    "trn %f %u %i %i",
+    timestamp,
+    netId,
+    x,
+    y
+  )
+  
+  sendToAll(packet, playerId)
 end
 
 return M

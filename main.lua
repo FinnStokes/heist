@@ -3,7 +3,7 @@
 --Constants
 CANVAS_HEIGHT = 128
 CANVAS_WIDTH = 240
-IP = "192.168.0.11"
+IP = "127.0.0.1"
 PORT = "44000"
 SPEED = 200
 
@@ -60,12 +60,12 @@ love.load = function ()
   end
   
   screen = {
-    x = math.floor((mode.width - (CANVAS_WIDTH * scale)) / 2),
-    y = math.floor((mode.height - (CANVAS_HEIGHT * scale)) / 2),
-    width = mode.width,
-    height = mode.height,
+    x = 0, --math.floor((mode.width - (CANVAS_WIDTH * scale)) / 2),
+    y = 0, --math.floor((mode.height - (CANVAS_HEIGHT * scale)) / 2),
+    width = CANVAS_WIDTH * scale, --mode.width,
+    height = CANVAS_HEIGHT * scale, --mode.height,
     scale = scale,
-    fullscreen = true,
+    fullscreen = false,
     vsync = true,
   }
   

@@ -117,15 +117,24 @@ commands.ok = function (args)
   timing.setOffset(netTime - timing.getTime())
   timing.update()
   playerId = tonumber(args[2])
-  print("connected", playerId)
 end
 
 -- Make a new networked entity
 commands.mk = function (args)
-  local netId, pid, type = unpack(args)
+  local netId, pid, type, character, x, y, fx, fy = unpack(args)
   netId = tonumber(netId)
   pid = tonumber(pid)
-  local newPlayer = entity.build("player", {character = "killer"})
+  x, y = tonumber(x), tonumber(y)
+  fx, fy = tonumber(fx), tonumber(fy)
+  local facing
+  if fx and fy then
+    facing = {x = fx, y = fy}
+  end
+  local newPlayer = entity.build("player", {
+    x = x, y = y,
+    facing = facing,
+    character = character
+  })
   if pid == playerId then
     entity.tag(newPlayer, "avatar")
   end

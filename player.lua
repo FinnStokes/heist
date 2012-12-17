@@ -28,6 +28,7 @@ entity.addTemplate("player", function (player, args)
     end
   end
 
+  player.character = args.character
   player.position = { --Fractional measure of your current position
     x = player.location.x,
     y = player.location.y,
