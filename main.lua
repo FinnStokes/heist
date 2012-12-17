@@ -8,7 +8,7 @@ PORT = "44000"
 SPEED = 200
 
 -- GLOBAL
-isServer
+isServer = nil
 
 local entity = require("entity")
 local event = require("event")

@@ -68,7 +68,7 @@ local onNewAction = function (e)
       local packet = string.format(
         "ded %f %u",
         e.action.timestamp,
-        netId,
+        netId
       )
       sendToAll(packet)
     elseif e.action.type == "turnTo" then
@@ -211,7 +211,7 @@ commands.hi = function (playerId, args)
       netId,
       i,
       e.location.x,
-      e.location.y,
+      e.location.y
     )
   end
   

@@ -168,7 +168,7 @@ commands.mk = function (args)
 end
 
 -- Link a level object to a netId
-commnds.lnk = function (args)
+commands.lnk = function (args)
   local netId, mapId, x, y = unpack(args)
   netId = tonumber(netId)
   mapId = tonumber(mapId)
