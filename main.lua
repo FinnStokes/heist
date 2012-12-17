@@ -7,6 +7,9 @@ IP = "127.0.0.1"
 PORT = "44000"
 SPEED = 200
 
+-- GLOBAL
+isServer
+
 local entity = require("entity")
 local event = require("event")
 local goal = require("goal")
@@ -23,7 +26,6 @@ local system = require("system")
 local timing = require("timing")
 
 local canvas
-local isServer
 local screen
 
 --- The draw callback for Love.

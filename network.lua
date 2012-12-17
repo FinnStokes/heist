@@ -25,7 +25,7 @@ local linkEntity = function (_local, net)
 end
 
 local onNewAction = function (player)
-  if player.action then
+  if player.character and player.action then
     if player.action.type == "turnTo" then
       local packet = string.format(
         "trn %f %i %i",
@@ -92,6 +92,31 @@ M.step = function (dt, entities)
 
     commands[cmd](args)
   end
+end
+
+-- A guard has attacked
+commands.atk = function (args)
+  local timestamp, netId, target = unpack(args)
+  timestamp = tonumber(timestamp)
+  netId = tonumber(netId)
+  target = tonumber(target)
+  
+  -- Update local entity
+  local e = entity.get(net2local[netId])
+  action.queue(e, action.newAttack({
+    target = entity.get(net2local[target]),
+  }, timestamp))
+end
+
+-- A player is dead
+commands.ded = function (args)
+  local timestamp, netId = unpack(args)
+  timestamp = tonumber(timestamp)
+  netId = tonumber(netId)
+  
+  -- Update local entity
+  local e = entity.get(net2local[netId])
+  action.queue(e, {type = "dead"})
 end
 
 -- Change facing of a networked entity

@@ -48,6 +48,7 @@ M.step = function (dt, ents)
           sprite.play(e, "attack_" .. M.facing[e.facing.x][e.facing.y])
         else
           e.action.target.action = { type = "dead" }
+          event.notify("newAction", e.action.target)
           e.action = { type = "idle" }
         end
       elseif e.action.type == "moveTo" then

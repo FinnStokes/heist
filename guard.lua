@@ -244,16 +244,21 @@ local states = {
   end,
 }
 
---- Updates the guards based on current AI state
+--- Updates the guards based on current AI state (if server)
 M.step = function (dt, entities)
+  if isServer ~= true then
+    return
+  end
   local guards = entity.getGroup("guards")
   if guards and #guards > 0 then
-    for _,e in ipairs(entities) do
-      if e.ai then
-        local newState = states[e.ai.state](dt, entities, e)
-        if newState then
-          e.ai.state = newState
-        end
+    for _,e in ipairs(guards) do
+      local action = e.action
+      local newState = states[e.ai.state](dt, entities, e)
+      if newState then
+        e.ai.state = newState
+      end
+      if action ~= e.action then
+        event.notify("newAction", e)
       end
     end
   end

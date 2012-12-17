@@ -53,25 +53,40 @@ local sendToAll = function (packet, playerId)
   end
 end
 
-local onNewAction = function (player)
-  if player.action then
-    local netId = local2net[player.id]
-    if player.action.type == "turnTo" then
+local onNewAction = function (e)
+  local netId = local2net[e.id]
+  if netId and e.action then
+    if e.action.type == "attack" then
       local packet = string.format(
-        "trn %f %u %i %i",
-        player.action.timestamp,
+        "atk %f %u %u",
+        e.action.timestamp,
         netId,
-        player.action.facing.x,
-        player.action.facing.y
+        local2net[e.action.target.id]
       )
       sendToAll(packet)
-    elseif player.action.type == "moveTo" then
+    elseif e.action.type == "dead" then
+      local packet = string.format(
+        "ded %f %u",
+        e.action.timestamp,
+        netId,
+      )
+      sendToAll(packet)
+    elseif e.action.type == "turnTo" then
+      local packet = string.format(
+        "trn %f %u %i %i",
+        e.action.timestamp,
+        netId,
+        e.action.facing.x,
+        e.action.facing.y
+      )
+      sendToAll(packet)
+    elseif e.action.type == "moveTo" then
       local packet = string.format(
         "mov %f %u %i %i",
-        player.action.timestamp,
+        e.action.timestamp,
         netId,
-        player.action.location.x,
-        player.action.location.y
+        e.action.location.x,
+        e.action.location.y
       )
       sendToAll(packet)
     end
