@@ -177,6 +177,7 @@ commands.lnk = function (args)
   x, y = tonumber(x), tonumber(y)
   local world = entity.get("world")
   local e = world.objects[mapId]
+  print("lnk", e.id, netId, mapId)
   e.location = {
     x = x,
     y = y,

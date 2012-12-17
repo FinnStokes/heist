@@ -214,6 +214,7 @@ commands.hi = function (playerId, args)
       e.location.x,
       e.location.y
     )
+    sock:sendto(packet, msg_or_ip, port_or_nil)
   end
   
   -- Spawn the new player's avatar on each client
