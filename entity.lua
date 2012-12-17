@@ -11,11 +11,35 @@ local deleteQueue = {}
 local addQueue = {}
 local tagQueue = {}
 local groupQueue = {}
+local templates = {}
+
+--- Add a new template constructor
+-- @param type (string) The name of the template
+-- @parm f (function) The constructor to call (signature f(entity, args))
+-- @see build
+M.addTemplate = function (type, f)
+  templates[type] = f
+end
 
 --- Get a list of all active entities.
 -- @return (table) The list of entities.
 M.all = function ()
   return entityList
+end
+
+---Construct an entity from a template
+-- @param type (string) The name of the template
+-- @param args (table) The template-specific arguments
+-- @return (table) The constructed entity
+M.build = function (type, args)
+  local template = templates[type]
+  local e = M.new()
+  if template ~= nil then
+    template(e, args)
+  else
+    error("E: Unknown entity template '"..type.."'")
+  end
+  return e
 end
 
 --- Delete an entity.
