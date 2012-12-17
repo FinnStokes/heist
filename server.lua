@@ -124,6 +124,7 @@ M.start = function ()
   for _, e in ipairs(world.objects) do
     local netId = nextEntityId
     linkEntity(e.id, netId)
+    nextEntityId = nextEntityId + 1
   end
 end
 
