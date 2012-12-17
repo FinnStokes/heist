@@ -94,6 +94,7 @@ local onNewAction = function (e)
 end
 
 local onStop = function (e)
+  local netId = local2net[e.id]
   local packet = string.format(
     "stp %u %i %i",
     netId,
