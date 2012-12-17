@@ -111,9 +111,11 @@ M.new = function (data)
       event.notify("tileCreation", {x=x, y=y})
     end
   end
-  
+
+  -- Object layer
+  e.objects = {}
   if objectGroup then
-    for _,object in ipairs(data.layers[objectGroup].objects) do
+    for i,object in ipairs(data.layers[objectGroup].objects) do
       object.properties.x = 1 + math.floor(object.x/data.tilewidth)
       object.properties.y = data.layers[tileLayer].height - math.floor(object.y/data.tilewidth)
       if object.polygon then
@@ -124,14 +126,16 @@ M.new = function (data)
       end
       object.properties.width = object.width
       object.properties.height = object.height
-      local e = entity.build(object.type, object.properties)
+      local o = entity.build(object.type, object.properties)
+      o.mapId = i
+      e.objects[i] = o
       if object.name then
-        entity.tag(e, object.name)
+        entity.tag(o, object.name)
       end
       if object.properties.groups then
         local groups = object.properties.groups:split(",")
         for _,g in ipairs(groups) do
-          object.group(e,g:trim())
+          object.group(o,g:trim())
         end
       end
     end

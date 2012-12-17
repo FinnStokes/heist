@@ -103,6 +103,13 @@ M.start = function ()
   linkEntity(newPlayer.id, nextEntityId)
   players.entities[0] = nextEntityId
   nextEntityId = nextEntityId + 1
+
+  -- Link level objects to netIds
+  local world = entity.get("world")
+  for _, e in ipairs(world.objects) do
+    local netId = nextEntityId
+    linkEntity(e.id, netId)
+  end
 end
 
 --- Stop the server.
@@ -178,6 +185,19 @@ commands.hi = function (playerId, args)
       e.facing.y
     )
     sock:sendto(packet, msg_or_ip, port_or_nil)
+  end
+
+  -- Link level objects to net ids on the new client
+  local world = entity.get("world")
+  for i, e in ipairs(world.objects) do
+    local netId = local2net[e.id]
+    local packet = string.format(
+      "lnk %u %u %i %i",
+      netId,
+      i,
+      e.location.x,
+      e.location.y,
+    )
   end
   
   -- Spawn the new player's avatar on each client

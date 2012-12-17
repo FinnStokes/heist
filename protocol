@@ -5,11 +5,17 @@ c: ok [netTime] [playerId]
 s: png 
 c: 
 
-c: trn [endTime] x y
-s: trn [endTime] [netId] x y
+s: mk [netId] [playerId] [type] [character] [x] [y] [fx] [fy]
+c: mk [netId]
 
-c: mov [endTime] x y
-s: mov [endTime] [netId] x y
+s: lnk [netId] [mapId] [x] [y]
+c: lnk [netId]
+
+c: trn [endTime] [x] [y]
+s: trn [endTime] [netId] [x] [y]
+
+c: mov [endTime] [x] [y]
+s: mov [endTime] [netId] [x] [y]
 
 c: bye
 s: bye

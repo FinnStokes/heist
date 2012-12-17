@@ -142,6 +142,25 @@ commands.mk = function (args)
   linkEntity(newPlayer.id, netId)
 end
 
+-- Link a level object to a netId
+commnds.lnk = function (args)
+  local netId, mapId, x, y = unpack(args)
+  netId = tonumber(netId)
+  mapId = tonumber(mapId)
+  x, y = tonumber(x), tonumber(y)
+  local world = entity.get("world")
+  local e = world.objects[mapId]
+  e.location = {
+    x = x,
+    y = y,
+  }
+  e.position = {
+    x = e.location.x,
+    y = e.location.y,
+  }
+  linkEntity(e.id, netId)
+end
+
 -- Move a networked entity
 commands.mov = function (args)
   local timestamp, netId, x, y = unpack(args)
