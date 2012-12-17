@@ -103,9 +103,8 @@ commands.atk = function (args)
   
   -- Update local entity
   local e = entity.get(net2local[netId])
-  action.queue(e, action.newAttack({
-    target = entity.get(net2local[target]),
-  }, timestamp))
+  local t = entity.get(net2local[target])
+  action.queue(e, action.newAttack(t, timestamp))
 end
 
 -- A player is dead
@@ -177,7 +176,6 @@ commands.lnk = function (args)
   x, y = tonumber(x), tonumber(y)
   local world = entity.get("world")
   local e = world.objects[mapId]
-  print("lnk", e.id, netId, mapId)
   e.location = {
     x = x,
     y = y,
@@ -199,13 +197,27 @@ commands.mov = function (args)
   
   -- Update local entity
   local e = entity.get(net2local[netId])
-  if e ~= nil then
-    if e then
-      action.queue(e, action.newMove({
-        x = x,
-        y = y,
-      }, timestamp))
-    end
+  if e then
+    action.queue(e, action.newMove({
+      x = x,
+      y = y,
+    }, timestamp))
+  end
+end
+
+-- Stop a networked entity
+commands.stp = function (args)
+  local netId, x, y = unpack(args)
+  netId = tonumber(netId)
+  x = tonumber(x)
+  y = tonumber(y)
+  
+  -- Update local entity
+  local e = entity.get(net2local[netId])
+  if e then
+    e.active = false
+    e.location.x = x
+    e.location.y = y
   end
 end
 

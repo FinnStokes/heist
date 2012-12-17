@@ -93,6 +93,16 @@ local onNewAction = function (e)
   end
 end
 
+local onStop = function (e)
+  local packet = string.format(
+    "stp %u %i %i",
+    netId,
+    e.location.x,
+    e.location.y
+  )
+  sendToAll(packet)
+end
+
 local M = {}
 
 --- Gets the server IP and port.
@@ -109,6 +119,7 @@ M.start = function ()
   timer = 0
   
   event.subscribe("newAction", onNewAction)
+  event.subscribe("stop", onStop)
   
   -- Spawn the server's avatar
   local newPlayer = entity.build("player", {character = characters[1]})

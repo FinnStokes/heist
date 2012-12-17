@@ -191,6 +191,7 @@ local states = {
   alert = function (dt, entities, e)
     if e.ai.target.active then
       e.ai.target.active = false
+      event.notify("stop", e.ai.target)
     end
     if not e.ai.path or #e.ai.path <= 1 then
       e.ai.path = path.get(e.location, e.ai.target.location)
