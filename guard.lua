@@ -217,26 +217,19 @@ local states = {
     end
   end,
   patrol = function (dt, entities, e)
-    local spotting, target = spot(dt, entities, e)
-    if spotting and target.active then
-      e.ai.target = target
-      e.ai.path = path.get(e.location, target.location)
-      return "caution"
+    if e.action.type == "idle" then
+      local spotting, target = spot(dt, entities, e)
+      if spotting and target.active then
+        e.ai.target = target
+        e.ai.path = path.get(e.location, target.location)
+        return "caution"
+      end
     end
     followRoute(dt, entities, e)
   end,
   returning = function (dt, entities, e)
     if not e.ai.path then
-      local minPath, minCost
-      for i,pos in ipairs(e.route) do
-        local p = path.get(e.location, pos)
-        if not minCost or p.cost < minCost then
-          minPath = p
-          minCost = p.cost
-          e.route.next = i
-        end
-      end
-      e.ai.path = minPath
+      e.ai.path = path.get(e.location, e.route[e.route.next])
     end
     if #e.ai.path > 0 then
       while #e.ai.path > 0 and goto(e, e.ai.path[#e.ai.path]) do
