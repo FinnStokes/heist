@@ -14,7 +14,6 @@ local commands = {}
 local playerId
 local local2net = {}
 local net2local = {}
-local netTime
 local port
 local sock
 local timeOfLastPacket
@@ -60,7 +59,6 @@ M.start = function (address, port)
   event.subscribe("newAction", onNewAction)
   
   -- Connect to server
-  netTime = 0
   timeOfLastPacket = socket.gettime()
   
   sock:send("hi")
@@ -75,7 +73,6 @@ end
 
 --- Handle server messages and send our network updates.
 M.step = function (dt, entities)
-  netTime = netTime + dt
 
   -- Handle server messages
   while true do
@@ -116,8 +113,11 @@ end
 -- Server acknowledge
 commands.ok = function (args)
   latency = (socket.gettime() - timeOfLastPacket)
-  netTime = tonumber(args[1]) + (latency / 2)
+  local netTime = tonumber(args[1]) + (latency / 2)
   timing.setOffset(netTime - timing.getTime())
+  print(tonumber(args[1]), latency, netTime, timing.getTime())
+  timing.update()
+  print(timing.getTime())
   playerId = tonumber(args[2])
 end
 

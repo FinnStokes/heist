@@ -173,7 +173,7 @@ commands.hi = function (playerId, args)
   linkPlayer(id, address)
   
   -- Tell the player they are connected
-  local packet = string.format("ok %u %u", timing.getTime(), id)
+  local packet = string.format("ok %f %u", timing.getTime(), id)
   sock:sendto(packet, msg_or_ip, port_or_nil)
   
   -- Spawn existing players on the new client
