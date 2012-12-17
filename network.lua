@@ -222,7 +222,7 @@ commands.stp = function (args)
 end
 
 commands.win = function (args)
-  error("You're winner!")
+  print("You're winner!")
 end
 
 return M

@@ -46,7 +46,7 @@ M.step = function (dt, entities)
               p.location.y >= e.location.y - 1 then
             -- Winner
             event.notify("win")
-            error("You're winner!")
+            print("You're winner!")
           end
         end
       end
