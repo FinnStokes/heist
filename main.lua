@@ -3,7 +3,6 @@
 --Constants
 CANVAS_HEIGHT = 128
 CANVAS_WIDTH = 240
-IP = "192.168.0.6"
 PORT = "44000"
 SPEED = 200
 
@@ -26,10 +25,21 @@ local system = require("system")
 local timing = require("timing")
 
 local canvas
+local ip
 local screen
 
 --- The draw callback for Love.
 love.draw = function ()
+  if isServer == nil then
+    -- Display setup instructions
+    love.graphics.print(
+[[To play by yourself or host a game, press F11.
+To connect to a hosted game, type the host machine's IP address and then press F10.
+IP: ]] .. ip,
+    0, 0)
+    return
+  end
+
   -- Draw to canvas without scaling
   love.graphics.setCanvas(canvas)
   love.graphics.clear()
@@ -51,6 +61,8 @@ end
 
 --- The initialisation for Love.
 love.load = function ()
+  ip = ""
+
   -- Find the optimal screen scaling
   local modes = love.graphics.getModes()
   table.sort(modes, function (a, b)
@@ -110,13 +122,17 @@ love.keypressed = function (key)
     if key == "f10" then
       -- Client
       isServer = false
-      network.start(IP, PORT)
+      network.start(ip, PORT)
     elseif key == "f11" then
       -- Server
       isServer = true
       system.remove(network)
       entity.update(0)
       server.start()
+    elseif key == "backspace" then
+      ip = ip:sub(1, -2) -- remove last character
+    else
+      ip = ip .. key
     end
   end
   
