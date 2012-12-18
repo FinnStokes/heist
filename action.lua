@@ -70,7 +70,9 @@ M.step = function (dt, ents)
             e.facing.x = math.sign(e.action.target.location.x - e.location.x)
             e.facing.y = math.sign(e.action.target.location.y - e.location.y)
           end
-          sprite.play(e, "attack_" .. M.facing[e.facing.x][e.facing.y])
+          if M.facing[e.facing.x][e.facing.y] then
+            sprite.play(e, "attack_" .. M.facing[e.facing.x][e.facing.y])
+          end
         else
           e.action.target.action = { type = "dead" }
           event.notify("newAction", e.action.target)
