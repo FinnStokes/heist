@@ -88,12 +88,12 @@ love.load = function ()
   end
   
   screen = {
-    x = 0, --math.floor((mode.width - (CANVAS_WIDTH * scale)) / 2),
-    y = 0, --math.floor((mode.height - (CANVAS_HEIGHT * scale)) / 2),
-    width = CANVAS_WIDTH * scale, --mode.width,
-    height = CANVAS_HEIGHT * scale, --mode.height,
+    x = math.floor((mode.width - (CANVAS_WIDTH * scale)) / 2),
+    y = math.floor((mode.height - (CANVAS_HEIGHT * scale)) / 2),
+    width = mode.width,
+    height = mode.height,
     scale = scale,
-    fullscreen = false,
+    fullscreen = true,
     vsync = true,
   }
   
@@ -131,7 +131,7 @@ end
 love.keypressed = function (key)
   -- Handle client/server specialisation
   if isServer == nil then
-    if key == "f10" then
+    if key == "f10" or key == "return" then
       -- Client
       isServer = false
       network.start(ip, PORT)

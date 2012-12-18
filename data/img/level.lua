@@ -117,7 +117,7 @@ return { version = "1.1", luaversion = "5.1", orientation = "orthogonal", width 
           name = "",
           type = "goal",
           x = 32,
-          y = 336,
+          y = 176,
           width = 16,
           height = 16,
           properties = {}
