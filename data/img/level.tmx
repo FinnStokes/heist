@@ -269,16 +269,13 @@
  </tileset>
  <layer name="tiles" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJy1lc1SwjAQx0OLgB6VoR3txVGpFi74yZUDD8CBB8A3kPc/uBmz499106QfHH7TpGnz6242aWqMmROluw6IzLUz0cax0jN+Rdy5q689JBJiAsh+7BiPPxMvjldipNxLlLkeOnpHEWheZObJ96Nr5+LZLl67RuOWoPcS1tNepwFv0pM3Jl7OXeb6H8Aa5n0XY3IcvSvhWileWVd9xLsR3k3AO4F5sK7yht6d8O4C3pi6mpnf+s493pj1nXvm6ZLn1Pw9q+6JMwd73zzz8P3YvYXeBDwS9m4V1xjuc42vPc+19e4Vl/RKx7YHbwbkLby8r+u8fH5Nwetbrz14ZZ5D8d6acD3H1EtMnjWXPLc0L58Tpfn/75f/I23fabHJc6tJvLFoXnluobciFsTS/OzVA3HjWEAbqZR7S9G37xbEueOa+ATvBWD7X/Bs3xxrvPxtMqYlfH8KeancGOfGxjSscdd5Q9Tl5RiYh72Fc8oYtW/GNQp9V8jb9F0tnkGP3ieIUdZuEfDgO5hDrOeDMk9TYusC69lXHzJObc/K/Y013zbPpyLxrN2psfn4BoMkNsA=
+   eJy1lc1SgzAQx1OorXrUDjDKxfEDpVzqZ6899AF66APUN7Dvf3AzZse/64YESg+/ISGQH7vZhNQY80BU7joictfORRvHKs/4JXHrrr72mEiIU0D2Y8d4/Jl4cbwSE+Veosx1f6B3EoHmRTJPvh9duxDPHuK1azTtCXovYD3tdRbwJgN5Y+Ll3OWu/wEsYd53MSbH0bsQroXiPUa8K+FddfBiXRUdvRvh3XTw+sjMb30XHm/M+vJ+yCLjiok3NX/PqjvixMHeN888fD92b6E3AY+EvWvFNYX7XONLz3N9vVvFJb3SsR7AmwNFDy/v6zYvn18z8PrWawtemedQvDcmXM8x9RKTZ80lzy3Ny+dEZf7/++X/SNu/Wmzy3OoSbyyaV55b6K2JOdGYn726I64dc2gjtXKvEX37bkmcOa6IT/CeA7b/Bc8Ozb7Fy98mY2rg+1PIS+3GODc2pnGLu80boi0v+8A87C2dU8aofTOuUei7Qt6u72rxjAb0PkGMsnbLgAffwRxiPe+UeboSWxdYz776kHFqe1bub6z5vnk+Foln7Y6Nzcc3M6c2aw==
   </data>
  </layer>
  <objectgroup name="objects" width="30" height="30">
   <object type="spawner" x="32" y="128" width="16" height="16"/>
   <object type="guard" x="176" y="112">
    <polygon points="0,0 -80,0 -80,32 16,32 16,16 96,16 96,48 0,48"/>
-  </object>
-  <object type="guard" x="96" y="256">
-   <polygon points="0,0 0,-96 32,-96 32,0"/>
   </object>
   <object type="guard" x="208" y="256">
    <polygon points="0,0 0,-80 32,-80 32,0 48,0 48,-80 -16,-80 -16,0"/>
@@ -295,7 +292,7 @@
   <object type="guard" x="432" y="192">
    <polygon points="0,0 -64,0 -64,64 -96,64 -96,-144 0,-144"/>
   </object>
-  <object type="goal" x="32" y="176" width="16" height="16"/>
+  <object type="goal" x="32" y="336" width="16" height="16"/>
   <object type="guard" x="432" y="368">
    <polygon points="0,0 -48,0 -48,-32 0,-32"/>
   </object>
@@ -310,6 +307,9 @@
   </object>
   <object type="guard" x="32" y="400">
    <polygon points="0,0 48,0 48,32 0,32 32,32 32,0 0,0"/>
+  </object>
+  <object type="guard" x="96" y="160">
+   <polygon points="0,0 0,96 32,96 32,0"/>
   </object>
  </objectgroup>
 </map>
