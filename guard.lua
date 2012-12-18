@@ -334,6 +334,16 @@ local states = {
     followRoute(dt, entities, e)
   end,
   returning = function (dt, entities, e)
+    if e.action.type == "idle" then
+      local spotting, target = spot(dt, entities, e)
+      if spotting then
+        e.ai.spotTime = 0
+        e.ai.target = target
+        e.ai.targetPos = {x = target.location.x, y = target.location.y}
+        action.queue(e, {type = "caution"})
+        return "caution"
+      end
+    end
     if not e.ai.path then
       e.ai.path = path.get(e.location, e.route[e.route.next])
     end
