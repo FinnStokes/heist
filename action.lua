@@ -37,19 +37,32 @@ M.step = function (dt, ents)
       if e.actionQueue then
         while e.actionQueue[1] and e.action.type == "idle" do
           e.action = table.remove(e.actionQueue,1)
+          event.notify("newAction", e)
         end
       end
       if e.action.type == "patrol" then
-        sprite.play(e,"question_hide")
-        sprite.play(e,"exclamation_hide")
-        e.action = {type = "idle"}
+	if not e.action.complete then
+          sprite.play(e,"question_hide")
+          sprite.play(e,"exclamation_hide")
+          e.action.complete = true
+        else
+          e.action = {type = "idle"}
+        end
       elseif e.action.type == "caution" then
-        sprite.play(e,"question")
-        e.action = {type = "idle"}
+	if not e.action.complete then
+          sprite.play(e,"question")
+          e.action.complete = true
+        else
+          e.action = {type = "idle"}
+        end
       elseif e.action.type == "alert" then
-        sprite.play(e,"question_hide")
-        sprite.play(e,"exclamation")
-        e.action = {type = "idle"}
+	if not e.action.complete then
+          sprite.play(e,"question_hide")
+          sprite.play(e,"exclamation")
+          e.action.complete = true
+        else
+          e.action = {type = "idle"}
+        end
       elseif e.action.type == "attack" then
         if timing.getTime() < e.action.timestamp then
           if e.action.target.location.x ~= e.location.x or
