@@ -95,6 +95,17 @@ M.step = function (dt, entities)
 end
 
 -- A guard has changed state to caution
+commands.ptl = function (args)
+  local timestamp, netId = unpack(args)
+  timestamp = tonumber(timestamp)
+  netId = tonumber(netId)
+  
+  -- Update local entity
+  local e = entity.get(net2local[netId])
+  action.queue(e, {type = "patrol"})
+end
+
+-- A guard has changed state to caution
 commands.ctn = function (args)
   local timestamp, netId = unpack(args)
   timestamp = tonumber(timestamp)

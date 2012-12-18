@@ -56,7 +56,14 @@ end
 local onNewAction = function (e)
   local netId = local2net[e.id]
   if netId and e.action then
-    if e.action.type == "caution" then
+    if e.action.type == "patrol" then
+      local packet = string.format(
+        "ptl %f %u",
+        timing.getTime(),
+        netId
+      )
+      sendToAll(packet)
+    elseif e.action.type == "caution" then
       local packet = string.format(
         "ctn %f %u",
         timing.getTime(),

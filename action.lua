@@ -39,7 +39,11 @@ M.step = function (dt, ents)
           e.action = table.remove(e.actionQueue,1)
         end
       end
-      if e.action.type == "caution" then
+      if e.action.type == "patrol" then
+        sprite.play(e,"question_hide")
+        sprite.play(e,"exclamation_hide")
+        e.action = {type = "idle"}
+      elseif e.action.type == "caution" then
         sprite.play(e,"question")
         e.action = {type = "idle"}
       elseif e.action.type == "alert" then
