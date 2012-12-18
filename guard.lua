@@ -8,6 +8,7 @@ local path = require("path")
 local resource = require("resource")
 local sprite = require("sprite")
 local system = require("system")
+local timing = require("timing")
 
 local SIGHT_RANGE = 4
 
@@ -305,8 +306,11 @@ local states = {
         table.remove(e.ai.path)
       end
     else
-      action.queue(e, {type = "patrol"})
-      return "returning"
+      e.ai.path = nil
+      action.queue(e, action.newTurn({x = e.facing.y, y = -e.facing.x}, timing.getTime()+0.3))
+      action.queue(e, action.newTurn({x = -e.facing.y, y = e.facing.x}, timing.getTime()+0.6))
+      action.queue(e, action.newTurn({x = -e.facing.x, y = -e.facing.y}, timing.getTime()+0.9))
+      return "searching"
     end
   end,
   patrol = function (dt, entities, e)
@@ -335,6 +339,42 @@ local states = {
       return "patrol"
     end
   end,
+  searching = function (dt, entities, e)
+    for _,p in ipairs(entity.getGroup("players")) do
+      if p.active and
+          p.location.x <= e.location.x + 1 and
+          p.location.y <= e.location.y + 1 and
+          p.location.x >= e.location.x - 1 and
+          p.location.y >= e.location.y - 1 then
+        e.ai.target = p
+        e.ai.path = nil
+        e.actionQueue = {}
+        action.queue(e, {type = "alert"})
+        return "alert"
+      end
+    end
+    local spotting, target = spot(dt, entities, e)
+    if spotting then
+      e.ai.target = target
+      e.ai.targetPos = {x = target.location.x, y = target.location.y}
+      e.ai.spotTime = e.ai.spotTime + dt
+      if e.ai.spotTime > 1 then
+        e.ai.path = nil
+        e.actionQueue = {}
+        action.queue(e, {type = "alert"})
+        return "alert"
+      else
+        e.actionQueue = {}
+        return "caution"
+      end
+    else
+      e.ai.spotTime = 0
+    end
+    if e.action.type == "idle" then
+      action.queue(e, {type = "patrol"})
+      return "returning"
+    end
+  end
 }
 
 --- Updates the guards based on current AI state (if server)
