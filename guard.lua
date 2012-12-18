@@ -97,6 +97,60 @@ entity.addTemplate("guard", function (self, args)
     },
     playing = "idle_" .. action.facing[self.facing.x][self.facing.y],
   })
+  sprite.new(self, {
+    image = resource.getImage("data/img/question"),
+    width = 16,
+    height = 16,
+    originY = 16,
+    animations = {
+      question_hide = {
+        frames = {0},
+        fps = 1,
+      },
+      question_show = {
+        frames = {4},
+        fps = 1,
+      },
+      question = {
+        frames = {1,2,3,4},
+        fps = 5,
+        goto = "question_show",
+      },
+      noquestion = {
+        frames = {4,3,2,1},
+        fps = 5,
+        goto = "question_hide",
+      },
+    },
+    playing = "question_hide",
+  })
+  sprite.new(self, {
+    image = resource.getImage("data/img/exclamation"),
+    width = 16,
+    height = 16,
+    originY = 16,
+    animations = {
+      exclamation_hide = {
+        frames = {0},
+        fps = 1,
+      },
+      exclamation_show = {
+        frames = {4},
+        fps = 1,
+      },
+      exclamation = {
+        frames = {1,2,3,4},
+        fps = 5,
+        goto = "exclamation_show",
+      },
+      noexclamation = {
+        frames = {4,3,2,1},
+        fps = 5,
+        goto = "exclamation_hide",
+      },
+    },
+    playing = "exclamation_hide",
+  })
   entity.group(self, "guards")
   return self
 end)
@@ -216,6 +270,7 @@ local states = {
       end
     else
       e.ai.path = nil
+      e.action = {type = "alert"}
       return "alert"
     end
   end,
@@ -225,6 +280,7 @@ local states = {
       if spotting and target.active then
         e.ai.target = target
         e.ai.path = path.get(e.location, target.location)
+        e.action = {type = "caution"}
         return "caution"
       end
     end

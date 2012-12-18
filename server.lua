@@ -56,7 +56,21 @@ end
 local onNewAction = function (e)
   local netId = local2net[e.id]
   if netId and e.action then
-    if e.action.type == "attack" then
+    if e.action.type == "caution" then
+      local packet = string.format(
+        "ctn %f %u",
+        timing.getTime(),
+        netId
+      )
+      sendToAll(packet)
+    elseif e.action.type == "alert" then
+      local packet = string.format(
+        "alt %f %u",
+        timing.getTime(),
+        netId
+      )
+      sendToAll(packet)
+    elseif e.action.type == "attack" then
       local packet = string.format(
         "atk %f %u %u",
         e.action.timestamp,
@@ -67,7 +81,7 @@ local onNewAction = function (e)
     elseif e.action.type == "dead" then
       local packet = string.format(
         "ded %f %u",
-        0,
+        timing.getTime(),
         netId
       )
       sendToAll(packet)
@@ -165,7 +179,7 @@ M.update = function (dt)
 
     if data == nil then
       if msg_or_ip == "timeout" then
-        -- No more packets, so finish this update
+       -- No more packets, so finish this update
         break
       else
         -- Something bad happened, print message to error

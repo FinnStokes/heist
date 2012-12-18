@@ -94,6 +94,41 @@ M.step = function (dt, entities)
   end
 end
 
+-- A guard has changed state to caution
+commands.ctn = function (args)
+  local timestamp, netId = unpack(args)
+  timestamp = tonumber(timestamp)
+  netId = tonumber(netId)
+  
+  -- Update local entity
+  local e = entity.get(net2local[netId])
+  action.queue(e, {type = "caution"})
+end
+
+-- A guard has changed state to alert
+commands.alt = function (args)
+  local timestamp, netId = unpack(args)
+  timestamp = tonumber(timestamp)
+  netId = tonumber(netId)
+  
+  -- Update local entity
+  local e = entity.get(net2local[netId])
+  action.queue(e, {type = "alert"})
+end
+
+-- A guard has attacked
+commands.atk = function (args)
+  local timestamp, netId, target = unpack(args)
+  timestamp = tonumber(timestamp)
+  netId = tonumber(netId)
+  target = tonumber(target)
+  
+  -- Update local entity
+  local e = entity.get(net2local[netId])
+  local t = entity.get(net2local[target])
+  action.queue(e, action.newAttack(t, timestamp))
+end
+
 -- A guard has attacked
 commands.atk = function (args)
   local timestamp, netId, target = unpack(args)

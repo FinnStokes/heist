@@ -39,7 +39,14 @@ M.step = function (dt, ents)
           e.action = table.remove(e.actionQueue,1)
         end
       end
-      if e.action.type == "attack" then
+      if e.action.type == "caution" then
+        sprite.play(e,"question")
+        e.action = {type = "idle"}
+      elseif e.action.type == "alert" then
+        sprite.play(e,"question_hide")
+        sprite.play(e,"exclamation")
+        e.action = {type = "idle"}
+      elseif e.action.type == "attack" then
         if timing.getTime() < e.action.timestamp then
           if e.action.target.location.x ~= e.location.x or
               e.action.target.location.y ~= e.location.y then
@@ -50,6 +57,7 @@ M.step = function (dt, ents)
         else
           e.action.target.action = { type = "dead" }
           event.notify("newAction", e.action.target)
+          sprite.play(e,"exclamation_hide")
           e.action = { type = "idle" }
         end
       elseif e.action.type == "moveTo" then
