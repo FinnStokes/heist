@@ -170,7 +170,8 @@ local move = function (e, dir)
 end
 
 local goto = function (e, pos)
-  if e.action and e.action.type == "idle" then
+  if e.action and e.action.type == "idle" and
+      (not e.actionQueue or #e.actionQueue == 0)then
     if pos.x > e.location.x then
       move(e, {x = 1, y = 0})
     elseif pos.x < e.location.x then
