@@ -156,31 +156,38 @@ entity.addTemplate("guard", function (self, args)
   return self
 end)
 
-local move = function (e, dir)
+local move = function (e, dir, fast)
   if e.facing.x ~= dir.x or e.facing.y ~= dir.y then
     e.action = action.newTurn({
       x = dir.x,
       y = dir.y,
     })
   else
-    e.action = action.newGuardMove({
-      x = e.location.x + dir.x,
-      y = e.location.y + dir.y,
-    })
+    if fast then
+      e.action = action.newMove({
+        x = e.location.x + dir.x,
+        y = e.location.y + dir.y,
+      })
+    else
+      e.action = action.newGuardMove({
+        x = e.location.x + dir.x,
+        y = e.location.y + dir.y,
+      })
+    end
   end
 end
 
-local goto = function (e, pos)
+local goto = function (e, pos, fast)
   if e.action and e.action.type == "idle" and
       (not e.actionQueue or #e.actionQueue == 0)then
     if pos.x > e.location.x then
-      move(e, {x = 1, y = 0})
+      move(e, {x = 1, y = 0}, fast)
     elseif pos.x < e.location.x then
-      move(e, {x = -1, y = 0})
+      move(e, {x = -1, y = 0}, fast)
     elseif pos.y > e.location.y then
-      move(e, {x = 0, y = 1})
+      move(e, {x = 0, y = 1}, fast)
     elseif pos.y < e.location.y then
-      move(e, {x = 0, y = -1})
+      move(e, {x = 0, y = -1}, fast)
     else
       return true
     end
@@ -256,7 +263,7 @@ local states = {
       table.remove(e.ai.path)
     end
     if e.ai.path and #e.ai.path > 1 then
-      while #e.ai.path > 1 and goto(e, e.ai.path[#e.ai.path]) do
+      while #e.ai.path > 1 and goto(e, e.ai.path[#e.ai.path], true) do
         table.remove(e.ai.path)
       end
     else
@@ -302,7 +309,7 @@ local states = {
       e.ai.path = path.get(e.location, e.ai.targetPos)
     end
     if #e.ai.path > 0 then
-      while #e.ai.path > 0 and goto(e, e.ai.path[#e.ai.path]) do
+      while #e.ai.path > 0 and goto(e, e.ai.path[#e.ai.path], true) do
         table.remove(e.ai.path)
       end
     else
