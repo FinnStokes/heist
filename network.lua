@@ -25,7 +25,7 @@ local linkEntity = function (_local, net)
 end
 
 local onNewAction = function (player)
-  if player.character and player.action then
+  if player.character and player.action and player == entity.get("avatar") then
     if player.action.type == "turnTo" then
       local packet = string.format(
         "trn %f %i %i",
@@ -125,19 +125,6 @@ commands.alt = function (args)
   -- Update local entity
   local e = entity.get(net2local[netId])
   action.queue(e, {type = "alert"})
-end
-
--- A guard has attacked
-commands.atk = function (args)
-  local timestamp, netId, target = unpack(args)
-  timestamp = tonumber(timestamp)
-  netId = tonumber(netId)
-  target = tonumber(target)
-  
-  -- Update local entity
-  local e = entity.get(net2local[netId])
-  local t = entity.get(net2local[target])
-  action.queue(e, action.newAttack(t, timestamp))
 end
 
 -- A guard has attacked
