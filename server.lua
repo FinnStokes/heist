@@ -210,6 +210,11 @@ end
 
 -- Acknowledge player connection
 commands.hi = function (playerId, args)
+  if players.nextId > 4 then
+    -- Server full, ignore connect request
+    return
+  end
+
   -- A new player is connecting
   local id = players.nextId
   players.nextId = players.nextId + 1

@@ -27,6 +27,11 @@ local timing = require("timing")
 local canvas
 local ip
 local screen
+local winner
+
+event.subscribe("win", function ()
+  winner = true
+end)
 
 --- The draw callback for Love.
 love.draw = function ()
@@ -45,6 +50,12 @@ IP: ]] .. ip,
   love.graphics.clear()
   love.graphics.setColor(255, 255, 255)
   system.draw()
+  
+  -- Draw win screen
+  if winner then
+    local img = resource.getImage("data/img/winner")
+    love.graphics.draw(img, 0, 0)
+  end
 
   -- Draw to screen with scaling
   love.graphics.setCanvas()
@@ -62,6 +73,7 @@ end
 --- The initialisation for Love.
 love.load = function ()
   ip = ""
+  winner = false
 
   -- Find the optimal screen scaling
   local modes = love.graphics.getModes()

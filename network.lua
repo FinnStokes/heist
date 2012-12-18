@@ -268,7 +268,7 @@ commands.stp = function (args)
 end
 
 commands.win = function (args)
-  print("You're winner!")
+  event.notify("win")
 end
 
 return M
